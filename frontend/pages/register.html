@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register — Scholarship Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <style>
+    body { background: var(--off-white); min-height: 100vh; display: flex; flex-direction: column; }
+    .auth-wrap { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+    .auth-card { background: white; border: 1px solid var(--border); border-radius: 20px; padding: 44px 48px; width: 100%; max-width: 560px; box-shadow: 0 8px 40px rgba(26,122,74,.08); }
+    .auth-logo { text-align: center; margin-bottom: 32px; }
+    .auth-logo .icon { width: 60px; height: 60px; background: var(--green-light); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 14px; }
+    .auth-logo h2 { font-size: 26px; color: var(--text-dark); margin-bottom: 6px; }
+    .auth-logo p  { font-size: 14px; color: var(--text-light); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-mid); margin-bottom: 7px; }
+    .form-group input, .form-group select { width: 100%; padding: 13px 16px; border: 1.5px solid var(--border); border-radius: 10px; font-family: inherit; font-size: 14px; color: var(--text-dark); outline: none; transition: border-color .2s; }
+    .form-group input:focus, .form-group select:focus { border-color: var(--green); }
+    .form-group input.error { border-color: #c0392b; }
+    .form-hint { font-size: 12px; color: var(--text-light); margin-top: 5px; }
+    .form-error { font-size: 12px; color: #c0392b; margin-top: 5px; display: none; }
+    .form-error.show { display: block; }
+    .btn-submit { width: 100%; background: var(--green); color: white; padding: 14px; border-radius: 10px; border: none; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .2s; margin-top: 8px; }
+    .btn-submit:hover { background: var(--green-mid); }
+    .btn-submit:disabled { opacity: .6; cursor: not-allowed; }
+    .auth-switch { text-align: center; margin-top: 22px; font-size: 14px; color: var(--text-light); }
+    .auth-switch a { color: var(--green); font-weight: 600; }
+    .server-error { background: #fce8e8; color: #c0392b; border: 1px solid #f5c6c6; border-radius: 10px; padding: 12px 16px; font-size: 13.5px; margin-bottom: 16px; display: none; }
+    .server-error.show { display: block; }
+    .success-box { background: var(--green-light); color: var(--green); border: 1px solid #b8dfca; border-radius: 14px; padding: 28px; text-align: center; display: none; }
+    .success-box.show { display: block; }
+    .success-box .big { font-size: 48px; margin-bottom: 12px; }
+    .success-box h3 { font-size: 22px; margin-bottom: 8px; }
+    .success-box p { font-size: 14px; line-height: 1.6; margin-bottom: 6px; }
+    .otr-badge { background: var(--green); color: white; font-size: 18px; font-weight: 700; padding: 10px 24px; border-radius: 10px; display: inline-block; margin: 12px 0; letter-spacing: 1px; }
+    .pw-wrap { position: relative; }
+    .pw-toggle { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-light); font-size: 16px; padding: 0; }
+    .pw-strength { height: 4px; border-radius: 2px; margin-top: 6px; transition: all .3s; background: var(--border); }
+    .step-indicator { display: flex; gap: 8px; margin-bottom: 28px; }
+    .step-dot { flex: 1; height: 4px; border-radius: 2px; background: var(--border); }
+    .step-dot.done { background: var(--green); }
+  </style>
+</head>
+<body>
+<div class="top-bar">
+  <span>Government of India &nbsp;|&nbsp; Ministry of Electronics &amp; Information Technology</span>
+  <div class="flag">
+    <div class="flag-stripe" style="background:#ff8c00"></div>
+    <div class="flag-stripe" style="background:#ffffff"></div>
+    <div class="flag-stripe" style="background:#138808"></div>
+    <span style="margin-left:6px">Digital India</span>
+  </div>
+</div>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="icon">🎓</div>
+      <h2>Create Account</h2>
+      <p>Register for Scholarship Hub — it's free</p>
+    </div>
+
+    <div id="reg-form">
+      <div class="server-error" id="server-error"></div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" id="full_name" placeholder="Ramesh Kumar" autocomplete="name">
+          <div class="form-error" id="name-err">Full name is required.</div>
+        </div>
+        <div class="form-group">
+          <label>Mobile Number</label>
+          <input type="tel" id="mobile" placeholder="+91 98765 43210" autocomplete="tel">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Email Address *</label>
+        <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+        <div class="form-error" id="email-err">Please enter a valid email address.</div>
+      </div>
+
+      <div class="form-group">
+        <label>Aadhaar Number (optional)</label>
+        <input type="text" id="aadhaar_no" placeholder="12-digit Aadhaar number" maxlength="12">
+        <div class="form-hint">Your Aadhaar is required for OTR registration on NSP.</div>
+      </div>
+
+      <div class="form-group">
+        <label>Password *</label>
+        <div class="pw-wrap">
+          <input type="password" id="password" placeholder="Minimum 6 characters" autocomplete="new-password"
+                 style="padding-right:44px" oninput="checkPwStrength(this.value)">
+          <button class="pw-toggle" type="button" onclick="togglePw('password',this)">👁</button>
+        </div>
+        <div class="pw-strength" id="pw-strength"></div>
+        <div class="form-error" id="pw-err">Password must be at least 6 characters.</div>
+      </div>
+
+      <div class="form-group">
+        <label>Confirm Password *</label>
+        <div class="pw-wrap">
+          <input type="password" id="confirm_pw" placeholder="Re-enter your password" autocomplete="new-password"
+                 style="padding-right:44px">
+          <button class="pw-toggle" type="button" onclick="togglePw('confirm_pw',this)">👁</button>
+        </div>
+        <div class="form-error" id="cpw-err">Passwords do not match.</div>
+      </div>
+
+      <button class="btn-submit" id="reg-btn" onclick="doRegister()">Create Account →</button>
+
+      <div class="auth-switch">
+        Already have an account? <a href="login.html">Sign in here</a>
+      </div>
+      <div style="text-align:center;margin-top:12px">
+        <a href="../index.html" style="font-size:13px;color:var(--text-light)">← Back to Home</a>
+      </div>
+    </div>
+
+    <div class="success-box" id="success-box">
+      <div class="big">🎉</div>
+      <h3>Registration Successful!</h3>
+      <p>Welcome to Scholarship Hub. Your OTR Number is:</p>
+      <div class="otr-badge" id="otr-display">—</div>
+      <p style="font-size:13px;color:var(--text-mid)">Save this number — you'll need it for NSP applications.</p>
+      <br>
+      <a href="dashboard.html" class="btn-card" style="display:inline-block;padding:12px 28px;font-size:14px">Go to Dashboard →</a>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/api.js"></script>
+<script>
+  if (Auth.isLoggedIn()) window.location.href = 'dashboard.html';
+
+  function togglePw(id, btn) {
+    const inp = document.getElementById(id);
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    btn.textContent = inp.type === 'password' ? '👁' : '🙈';
+  }
+
+  function checkPwStrength(val) {
+    const bar = document.getElementById('pw-strength');
+    if (!val) { bar.style.width='0'; bar.style.background='var(--border)'; return; }
+    let score = 0;
+    if (val.length >= 6)  score++;
+    if (val.length >= 10) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+    const colors = ['#c0392b','#e67e22','#f1c40f','#2ecc71','#1a7a4a'];
+    bar.style.width = (score * 20) + '%';
+    bar.style.background = colors[score-1] || '#c0392b';
+  }
+
+  async function doRegister() {
+    const full_name  = document.getElementById('full_name').value.trim();
+    const email      = document.getElementById('email').value.trim();
+    const password   = document.getElementById('password').value;
+    const confirm_pw = document.getElementById('confirm_pw').value;
+    const mobile     = document.getElementById('mobile').value.trim();
+    const aadhaar_no = document.getElementById('aadhaar_no').value.trim();
+    const btn        = document.getElementById('reg-btn');
+    const errBox     = document.getElementById('server-error');
+
+    let valid = true;
+    const setErr = (id, show) => {
+      document.getElementById(id).classList.toggle('show', show);
+    };
+
+    if (!full_name) { setErr('name-err', true); valid = false; } else setErr('name-err', false);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErr('email-err', true); valid = false; } else setErr('email-err', false);
+    if (password.length < 6) { setErr('pw-err', true); valid = false; } else setErr('pw-err', false);
+    if (password !== confirm_pw) { setErr('cpw-err', true); valid = false; } else setErr('cpw-err', false);
+    if (!valid) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Creating account…';
+    errBox.classList.remove('show');
+
+    const data = await apiFetch('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({ full_name, email, password, mobile: mobile||null, aadhaar_no: aadhaar_no||null })
+    });
+
+    if (data.success) {
+      Auth.save(data.token, data.user);
+      document.getElementById('reg-form').style.display = 'none';
+      document.getElementById('otr-display').textContent = data.user.otr_number || '—';
+      document.getElementById('success-box').classList.add('show');
+    } else {
+      errBox.textContent = data.message || 'Registration failed. Please try again.';
+      errBox.classList.add('show');
+      btn.disabled = false;
+      btn.textContent = 'Create Account →';
+    }
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Dashboard — Scholarship Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <style>
+    .dash-wrap { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+    .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
+    .dash-header h2 { font-size: 30px; color: var(--text-dark); }
+    .dash-header p  { font-size: 14px; color: var(--text-light); margin-top: 4px; }
+    .stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 32px; }
+    .stat-box { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 20px; text-align: center; }
+    .stat-box .s-num { font-family: 'Playfair Display',Georgia,serif; font-size: 28px; color: var(--green); font-weight: 700; }
+    .stat-box .s-lbl { font-size: 12px; color: var(--text-light); margin-top: 4px; }
+    .section-title { font-family: 'DM Sans',Arial,sans-serif; font-size: 17px; font-weight: 600; color: var(--text-dark); margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+    .app-card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 20px 24px; margin-bottom: 14px; display: flex; align-items: center; gap: 16px; }
+    .app-card:hover { border-color: var(--green); box-shadow: 0 4px 20px rgba(26,122,74,.08); }
+    .app-icon { width: 48px; height: 48px; border-radius: 12px; background: var(--green-light); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .app-info { flex: 1; }
+    .app-info h4 { font-size: 15px; font-weight: 600; color: var(--text-dark); }
+    .app-info p  { font-size: 13px; color: var(--text-light); margin-top: 3px; }
+    .app-right { text-align: right; flex-shrink: 0; }
+    .app-id { font-size: 12px; color: var(--text-light); margin-bottom: 6px; }
+    .profile-card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 24px; }
+    .profile-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--green-light); display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 700; color: var(--green); margin-bottom: 16px; }
+    .profile-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .profile-row:last-child { border-bottom: none; }
+    .profile-row span:first-child { color: var(--text-light); }
+    .profile-row span:last-child  { color: var(--text-dark); font-weight: 500; }
+    .empty-state { text-align: center; padding: 48px 24px; color: var(--text-light); }
+    .empty-state .e-icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state h3 { font-size: 18px; color: var(--text-mid); margin-bottom: 8px; }
+    .two-col { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; align-items: start; }
+    @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } .stats-row { grid-template-columns: repeat(2,1fr); } }
+  </style>
+</head>
+<body>
+<div class="top-bar">
+  <span>Government of India &nbsp;|&nbsp; Ministry of Electronics &amp; Information Technology</span>
+  <div class="flag">
+    <div class="flag-stripe" style="background:#ff8c00"></div>
+    <div class="flag-stripe" style="background:#ffffff"></div>
+    <div class="flag-stripe" style="background:#138808"></div>
+    <span style="margin-left:6px">Digital India</span>
+  </div>
+</div>
+<nav>
+  <div class="logo">
+    <div class="logo-icon">🎓</div>
+    <div class="logo-text"><h1>Scholarship Hub</h1><p>NATIONAL SCHOLARSHIP PORTAL</p></div>
+  </div>
+  <div class="nav-links">
+    <div class="nav-item"><a href="../index.html">Home</a></div>
+    <div class="nav-item"><a href="national.html">Scholarships</a></div>
+    <div class="nav-item"><a href="dashboard.html" class="active">My Dashboard</a></div>
+  </div>
+  <div class="nav-right" style="display:flex;gap:12px;align-items:center">
+    <a href="#" onclick="Auth.logout()" class="btn-apply" style="background:#c0392b">Logout</a>
+  </div>
+  <button id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="dash-wrap">
+  <div class="dash-header">
+    <div>
+      <h2 id="welcome-msg">My Dashboard</h2>
+      <p id="otr-msg">Loading your profile…</p>
+    </div>
+    <a href="national.html" class="btn-apply">Browse Scholarships</a>
+  </div>
+
+  <div class="stats-row" id="stats-row">
+    <div class="stat-box"><div class="s-num" id="stat-total">—</div><div class="s-lbl">Total Applications</div></div>
+    <div class="stat-box"><div class="s-num" id="stat-active">—</div><div class="s-lbl">Active</div></div>
+    <div class="stat-box"><div class="s-num" id="stat-approved">—</div><div class="s-lbl">Approved</div></div>
+    <div class="stat-box"><div class="s-num" id="stat-disbursed">—</div><div class="s-lbl">Disbursed</div></div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="section-title">
+        My Applications
+        <a href="national.html" class="btn-card" style="font-size:13px;padding:8px 16px">Apply Now →</a>
+      </div>
+      <div id="apps-list"><div class="loading">Loading applications…</div></div>
+    </div>
+    <div>
+      <div class="section-title">My Profile</div>
+      <div class="profile-card" id="profile-card"><div class="loading">Loading…</div></div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/script.js"></script>
+<script>
+  // Guard: must be logged in
+  if (!Auth.isLoggedIn()) window.location.href = 'login.html?redirect=dashboard.html';
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    const user = Auth.user();
+    if (user) {
+      document.getElementById('welcome-msg').textContent = `Welcome, ${user.full_name.split(' ')[0]}!`;
+      document.getElementById('otr-msg').textContent = `OTR Number: ${user.otr_number || 'Not assigned yet'}`;
+    }
+
+    // Load profile
+    const profileData = await apiFetch('/auth/profile');
+    if (profileData.success) {
+      const u = profileData.user;
+      const initials = u.full_name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+      document.getElementById('profile-card').innerHTML = `
+        <div class="profile-avatar">${initials}</div>
+        <div class="profile-row"><span>Full Name</span><span>${u.full_name}</span></div>
+        <div class="profile-row"><span>Email</span><span>${u.email}</span></div>
+        <div class="profile-row"><span>Mobile</span><span>${u.mobile || '—'}</span></div>
+        <div class="profile-row"><span>OTR Number</span><span style="color:var(--green);font-weight:700">${u.otr_number || '—'}</span></div>
+        <div class="profile-row"><span>Member Since</span><span>${new Date(u.created_at).toLocaleDateString('en-IN',{month:'short',year:'numeric'})}</span></div>`;
+    }
+
+    // Load applications
+    const appData = await apiFetch('/applications/my');
+    if (!appData.success || !appData.applications.length) {
+      document.getElementById('apps-list').innerHTML = `
+        <div class="empty-state">
+          <div class="e-icon">📋</div>
+          <h3>No applications yet</h3>
+          <p>Browse scholarships and submit your first application</p>
+          <br><a href="national.html" class="btn-card" style="display:inline-block;margin-top:12px;padding:10px 24px">Browse Scholarships →</a>
+        </div>`;
+      document.getElementById('stat-total').textContent = '0';
+      document.getElementById('stat-active').textContent = '0';
+      document.getElementById('stat-approved').textContent = '0';
+      document.getElementById('stat-disbursed').textContent = '0';
+      return;
+    }
+
+    const apps = appData.applications;
+    document.getElementById('stat-total').textContent = apps.length;
+    document.getElementById('stat-active').textContent = apps.filter(a => ['submitted','verified','sanctioned'].includes(a.status)).length;
+    document.getElementById('stat-approved').textContent = apps.filter(a => ['sanctioned','disbursed','complete'].includes(a.status)).length;
+    document.getElementById('stat-disbursed').textContent = apps.filter(a => a.status === 'disbursed' || a.status === 'complete').length;
+
+    document.getElementById('apps-list').innerHTML = apps.map(a => `
+      <div class="app-card">
+        <div class="app-icon">${_typeIcon(a.scholarship_type)}</div>
+        <div class="app-info">
+          <h4>${a.scholarship_title}</h4>
+          <p>${a.college_name || '—'} · ${a.academic_year || '—'}</p>
+        </div>
+        <div class="app-right">
+          <div class="app-id">ID: ${a.app_id}</div>
+          <span class="s-badge ${_statusBadge(a.status)}">${_statusLabel(a.status)}</span>
+        </div>
+      </div>`).join('');
+  });
+</script>
+</body>
+</html>

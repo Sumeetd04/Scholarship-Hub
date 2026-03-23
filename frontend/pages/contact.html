@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us — Scholarship Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/main.css">
+<style>
+  .contact-hero {
+    background: linear-gradient(135deg, #1a2e7a 0%, #1a5a9a 60%, #1a7aaa 100%);
+    padding: 60px 80px;
+    display: flex; align-items: center; justify-content: space-between;
+    min-height: 240px;
+  }
+  .contact-hero-content h2 { font-size: 44px; color: white; margin-bottom: 12px; }
+  .contact-hero-content p  { font-size: 15px; color: rgba(255,255,255,0.85); max-width: 520px; }
+  .contact-hero-icon { font-size: 90px; opacity: 0.2; }
+  .breadcrumb { font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 14px; }
+  .breadcrumb a { color: rgba(255,255,255,0.8); text-decoration: none; }
+
+  .contact-body { padding: 64px 80px; background: var(--off-white); }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 48px; align-items: start; }
+
+  /* Info cards */
+  .contact-info { display: flex; flex-direction: column; gap: 20px; }
+  .info-card {
+    background: white; border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px;
+    display: flex; align-items: flex-start; gap: 16px;
+    transition: box-shadow 0.2s;
+  }
+  .info-card:hover { box-shadow: 0 6px 24px rgba(26,122,74,0.1); }
+  .info-icon {
+    width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 22px;
+  }
+  .icon-bg-green { background: var(--green-light); }
+  .icon-bg-blue  { background: #e8f0fe; }
+  .icon-bg-gold  { background: var(--gold-light); }
+  .icon-bg-pink  { background: #fce8f0; }
+  .info-card-text h4 { font-family: 'DM Sans', Arial, sans-serif; font-size: 15px; font-weight: 600; color: var(--text-dark); margin-bottom: 5px; }
+  .info-card-text p, .info-card-text a {
+    font-size: 14px; color: var(--text-mid); line-height: 1.6;
+    text-decoration: none; display: block;
+  }
+  .info-card-text a:hover { color: var(--green); }
+  .info-card-text .hours { font-size: 12.5px; color: var(--text-light); margin-top: 4px; }
+
+  /* Helpdesk offices */
+  .offices-section { margin-top: 28px; }
+  .offices-section h3 {
+    font-family: 'DM Sans', Arial, sans-serif; font-size: 16px; font-weight: 600;
+    color: var(--green); text-transform: uppercase; letter-spacing: 0.8px;
+    border-bottom: 2px solid var(--green-light); padding-bottom: 10px; margin-bottom: 16px;
+  }
+  .office-card {
+    background: white; border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px 20px; margin-bottom: 12px;
+  }
+  .office-card h5 { font-family: 'DM Sans', Arial, sans-serif; font-size: 14px; font-weight: 600; color: var(--text-dark); margin-bottom: 4px; }
+  .office-card p  { font-size: 13px; color: var(--text-light); line-height: 1.6; }
+
+  /* Contact Form */
+  .contact-form-wrap {
+    background: white; border: 1px solid var(--border);
+    border-radius: 20px; padding: 40px;
+    box-shadow: 0 4px 24px rgba(26,122,74,0.07);
+  }
+  .contact-form-wrap h3 {
+    font-size: 26px; color: var(--text-dark); margin-bottom: 6px;
+  }
+  .contact-form-wrap > p { font-size: 14px; color: var(--text-light); margin-bottom: 32px; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+  .form-group label { font-size: 13px; font-weight: 600; color: var(--text-mid); }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 12px 16px;
+    border: 1.5px solid var(--border); border-radius: 10px;
+    font-family: 'DM Sans', Arial, sans-serif; font-size: 14px;
+    color: var(--text-dark); background: var(--off-white);
+    outline: none; transition: border-color 0.2s, background 0.2s;
+    resize: none;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--green); background: white;
+  }
+  .form-group textarea { min-height: 130px; }
+  .required { color: #e04040; margin-left: 2px; }
+
+  .btn-submit {
+    width: 100%; background: var(--green); color: white;
+    padding: 14px; border: none; border-radius: 10px;
+    font-family: 'DM Sans', Arial, sans-serif; font-size: 15px; font-weight: 600;
+    cursor: pointer; transition: background 0.2s, transform 0.15s;
+    margin-top: 4px;
+  }
+  .btn-submit:hover { background: var(--green-mid); transform: translateY(-1px); }
+
+  .success-msg {
+    display: none; background: var(--green-light); border: 1px solid #b8dfca;
+    border-radius: 12px; padding: 20px 24px; margin-top: 20px;
+    text-align: center;
+  }
+  .success-msg.show { display: block; }
+  .success-msg p { color: var(--green); font-weight: 500; font-size: 15px; }
+
+  /* Social links */
+  .social-section {
+    background: var(--text-dark); border-radius: 20px;
+    padding: 40px; text-align: center; margin-top: 40px;
+  }
+  .social-section h3 { color: white; font-size: 22px; margin-bottom: 8px; }
+  .social-section p  { color: rgba(255,255,255,0.65); font-size: 14px; margin-bottom: 24px; }
+  .social-row { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+  .social-link {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,0.1); color: white;
+    padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 500;
+    text-decoration: none; transition: background 0.2s;
+  }
+  .social-link:hover { background: var(--green); }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <span>Government of India &nbsp;|&nbsp; Ministry of Electronics & Information Technology</span>
+  <div class="flag">
+    <div class="flag-stripe" style="background:#ff8c00"></div>
+    <div class="flag-stripe" style="background:#ffffff"></div>
+    <div class="flag-stripe" style="background:#138808"></div>
+    <span style="margin-left:6px">Digital India</span>
+  </div>
+</div>
+
+<nav>
+  <div class="logo">
+    <div class="logo-icon">🎓</div>
+    <div class="logo-text">
+      <h1>Scholarship Hub</h1>
+      <p>NATIONAL SCHOLARSHIP PORTAL</p>
+    </div>
+  </div>
+  <div class="nav-links">
+    <div class="nav-item"><a href="../index.html">Home</a></div>
+    <div class="nav-item">
+      <span>Scholarships <span class="caret">▾</span></span>
+      <div class="dropdown">
+        <a href="international.html">🌐 International</a>
+        <a href="national.html">🇮🇳 National</a>
+        <a href="state.html">🏛️ State</a>
+        <a href="private.html">🏢 Private</a>
+      </div>
+    </div>
+    <div class="nav-item"><a href="../index.html#tracker">Track Application</a></div>
+    <div class="nav-item"><a href="../index.html#announcements">Announcements</a></div>
+    <div class="nav-item">
+      <span>Help <span class="caret">▾</span></span>
+      <div class="dropdown">
+        <a href="faq.html">❓ FAQs</a>
+        <a href="contact.html">📞 Contact Us</a>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:12px;align-items:center">
+    <div class="nav-search">
+      <span class="nav-search-icon">🔍</span>
+      <input type="text" placeholder="Search scholarships...">
+    </div>
+    <a href="#" class="btn-apply">Apply Now</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="contact-hero">
+  <div class="contact-hero-content">
+    <div class="breadcrumb"><a href="../index.html">Home</a> › Help › Contact Us</div>
+    <h2>Contact Us</h2>
+    <p>Have a question or need help with your application? Reach out to us and our team will get back to you within 2 working days.</p>
+  </div>
+  <div class="contact-hero-icon">📞</div>
+</div>
+
+<div class="contact-body">
+  <div class="contact-grid">
+
+    <!-- LEFT: Contact Info -->
+    <div>
+      <div class="contact-info">
+        <div class="info-card">
+          <div class="info-icon icon-bg-green">📞</div>
+          <div class="info-card-text">
+            <h4>Helpdesk Phone</h4>
+            <a href="tel:01206619540">0120-6619540</a>
+            <a href="tel:+918520807813">+91 85208 07813</a>
+            <p class="hours">Mon–Fri: 9:00 AM – 6:00 PM IST</p>
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="info-icon icon-bg-blue">✉️</div>
+          <div class="info-card-text">
+            <h4>Email Us</h4>
+            <a href="/cdn-cgi/l/email-protection#0c6469607c68697f674c627f7c226b637a226562"><span class="__cf_email__" data-cfemail="7b131e170b1f1e08103b15080b551c140d551215">[email&#160;protected]</span></a>
+            <a href="/cdn-cgi/l/email-protection#bfd6d1d9d0ffccdcd7d0d3decdccd7d6cfcfd0cdcbded391dcd0d2"><span class="__cf_email__" data-cfemail="c4adaaa2ab84b7a7acaba8a5b6b7acadb4b4abb6b0a5a8eaa7aba9">[email&#160;protected]</span></a>
+            <p class="hours">Response within 2 working days</p>
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="info-icon icon-bg-gold">📍</div>
+          <div class="info-card-text">
+            <h4>NSP Central Office</h4>
+            <p>National e-Governance Division (NeGD)<br>Electronics Niketan, CGO Complex,<br>New Delhi – 110003</p>
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="info-icon icon-bg-pink">🕐</div>
+          <div class="info-card-text">
+            <h4>Working Hours</h4>
+            <p>Monday – Friday: 9:00 AM – 6:00 PM</p>
+            <p>Saturday: 10:00 AM – 2:00 PM</p>
+            <p class="hours">Closed on Sundays & National Holidays</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- State Offices -->
+      <div class="offices-section">
+        <h3>🏛️ State Nodal Officers</h3>
+        <div class="office-card">
+          <h5>Andhra Pradesh</h5>
+          <p>AP Welfare Dept · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4a2b3a6739292225262b383922233a0a2d253c642324">[email&#160;protected]</a> · 040-23456789</p>
+        </div>
+        <div class="office-card">
+          <h5>Maharashtra</h5>
+          <p>Social Justice Dept · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3459555c551947575c5b585546475c5d4474535b421a5d5a">[email&#160;protected]</a> · 022-22345678</p>
+        </div>
+        <div class="office-card">
+          <h5>Uttar Pradesh</h5>
+          <p>Backward Class Welfare · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f38683de80909b9c9f9281809b9a83b3949c85dd9a9d">[email&#160;protected]</a> · 0522-2234567</p>
+        </div>
+        <div class="office-card">
+          <h5>West Bengal</h5>
+          <p>Minority Affairs Dept · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7700155a04141f181b1605041f1e0737101801591e19">[email&#160;protected]</a> · 033-22345678</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Contact Form -->
+    <div class="contact-form-wrap">
+      <h3>Send Us a Message</h3>
+      <p>Fill in the form below and our team will respond within 2 working days.</p>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name <span class="required">*</span></label>
+          <input type="text" id="fname" placeholder="e.g. Rahul">
+        </div>
+        <div class="form-group">
+          <label>Last Name <span class="required">*</span></label>
+          <input type="text" id="lname" placeholder="e.g. Sharma">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Email Address <span class="required">*</span></label>
+          <input type="email" id="email" placeholder="yourname@email.com">
+        </div>
+        <div class="form-group">
+          <label>Mobile Number</label>
+          <input type="tel" id="phone" placeholder="+91 00000 00000">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Application / OTR ID (if applicable)</label>
+        <input type="text" id="app-ref" placeholder="e.g. NSP-2024-123456">
+      </div>
+
+      <div class="form-group">
+        <label>Query Type <span class="required">*</span></label>
+        <select id="query-type">
+          <option value="">Select a category</option>
+          <option>Registration / OTR Issue</option>
+          <option>Application Submission Problem</option>
+          <option>Document Upload Issue</option>
+          <option>College Verification Pending</option>
+          <option>Payment / Disbursal Not Received</option>
+          <option>Scholarship Eligibility Query</option>
+          <option>Technical / Portal Issue</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Your Message <span class="required">*</span></label>
+        <textarea id="message" placeholder="Describe your issue or question in detail..."></textarea>
+      </div>
+
+      <button class="btn-submit" onclick="submitForm()">Send Message →</button>
+
+      <div class="success-msg" id="success-msg">
+        <p>✅ Your message has been sent successfully! We will get back to you within 2 working days.</p>
+      </div>
+    </div>
+
+  </div><!-- end contact-grid -->
+
+  <!-- Social -->
+  <div class="social-section">
+    <h3>Follow Us</h3>
+    <p>Stay updated with the latest scholarship announcements and notifications.</p>
+    <div class="social-row">
+      <a href="#" class="social-link">f &nbsp; Facebook</a>
+      <a href="#" class="social-link">𝕏 &nbsp; Twitter / X</a>
+      <a href="#" class="social-link">in &nbsp; LinkedIn</a>
+      <a href="#" class="social-link">📸 &nbsp; Instagram</a>
+    </div>
+  </div>
+
+</div><!-- end contact-body -->
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo"><div class="icon">🎓</div><span>Scholarship Hub</span></div>
+      <p class="footer-desc">Comprehensive scholarship information for students globally. A Government of India initiative.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Scholarships</h4>
+      <a href="international.html">International</a>
+      <a href="national.html">National</a>
+      <a href="state.html">State Sector</a>
+      <a href="private.html">Private Sector</a>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <a href="../index.html#tracker">Track Application</a>
+      <a href="../index.html#announcements">Announcements</a>
+      <a href="faq.html">FAQs</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="/cdn-cgi/l/email-protection#3851565e57784b5b505754594a4b50514848574a4c5954165b5755"><span class="__cf_email__" data-cfemail="b7ded9d1d8f7c4d4dfd8dbd6c5c4dfdec7c7d8c5c3d6db99d4d8da">[email&#160;protected]</span></a>
+      <a href="tel:+918520807813">+91 85208 07813</a>
+      <a href="contact.html">Contact Page</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Scholarship Hub. Government of India Initiative.</span>
+    <span>Privacy Policy &nbsp;·&nbsp; Terms of Use</span>
+  </div>
+</footer>
+
+<button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><scr

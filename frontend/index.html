@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scholarship Hub — India</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <span>Government of India &nbsp;|&nbsp; Ministry of Electronics &amp; Information Technology</span>
+  <div class="flag">
+    <div class="flag-stripe" style="background:#ff8c00"></div>
+    <div class="flag-stripe" style="background:#ffffff"></div>
+    <div class="flag-stripe" style="background:#138808"></div>
+    <span style="margin-left:6px">Digital India</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <div class="logo-icon">🎓</div>
+    <div class="logo-text">
+      <h1>Scholarship Hub</h1>
+      <p>NATIONAL SCHOLARSHIP PORTAL</p>
+    </div>
+  </div>
+  <div class="nav-links">
+    <div class="nav-item"><a href="index.html" class="active">Home</a></div>
+    <div class="nav-item">
+      <span>Scholarships <span class="caret">▾</span></span>
+      <div class="dropdown">
+        <a href="pages/international.html">🌐 International</a>
+        <a href="pages/national.html">🇮🇳 National</a>
+        <a href="pages/state.html">🏛️ State</a>
+        <a href="pages/private.html">🏢 Private</a>
+      </div>
+    </div>
+    <div class="nav-item"><a href="#tracker">Track Application</a></div>
+    <div class="nav-item"><a href="#announcements">Announcements</a></div>
+    <div class="nav-item">
+      <span>Help <span class="caret">▾</span></span>
+      <div class="dropdown">
+        <a href="pages/faq.html">❓ FAQs</a>
+        <a href="pages/contact.html">📞 Contact Us</a>
+      </div>
+    </div>
+  </div>
+  <div class="nav-right" style="display:flex;gap:12px;align-items:center">
+    <div class="nav-search">
+      <span class="nav-search-icon">🔍</span>
+      <input type="text" placeholder="Search scholarships...">
+    </div>
+    <a href="pages/national.html" class="btn-apply">Apply Now</a>
+  </div>
+  <button id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- HERO CAROUSEL -->
+<div class="hero" id="hero">
+  <div class="carousel-slides" id="slides">
+    <div class="slide slide-1">
+      <div class="slide-content">
+        <div class="slide-badge">NEW · Academic Year 2024–25</div>
+        <h2>Unlock Your Educational Dreams</h2>
+        <p>Thousands of scholarships for SC, ST, OBC and minority students. Fresh &amp; Renewal applications now open.</p>
+        <div class="slide-btns">
+          <a href="pages/national.html" class="btn-white">Apply Now</a>
+          <a href="#scholarships" class="btn-outline-white">Browse Scholarships</a>
+        </div>
+      </div>
+      <div class="slide-deco"><div class="slide-deco-icon">🎓</div></div>
+    </div>
+    <div class="slide slide-2">
+      <div class="slide-content">
+        <div class="slide-badge">INTERNATIONAL · 2024–25</div>
+        <h2>Study Abroad With Full Support</h2>
+        <p>International scholarships covering tuition, living expenses and travel for meritorious Indian students.</p>
+        <div class="slide-btns">
+          <a href="pages/international.html" class="btn-white">Explore International</a>
+          <a href="#tracker" class="btn-outline-white">Track Status</a>
+        </div>
+      </div>
+      <div class="slide-deco"><div class="slide-deco-icon">✈️</div></div>
+    </div>
+    <div class="slide slide-3">
+      <div class="slide-content">
+        <div class="slide-badge">CIVIL SERVICES · INCENTIVE</div>
+        <h2>Empowering Future Civil Servants</h2>
+        <p>Financial incentives of up to ₹1 Lakh for students qualifying UPSC Preliminary &amp; Mains from weaker sections.</p>
+        <div class="slide-btns">
+          <a href="pages/national.html" class="btn-white">Learn More</a>
+          <a href="#announcements" class="btn-outline-white">Announcements</a>
+        </div>
+      </div>
+      <div class="slide-deco"><div class="slide-deco-icon">⚖️</div></div>
+    </div>
+  </div>
+  <button class="carousel-nav carousel-prev" onclick="changeSlide(-1)">‹</button>
+  <button class="carousel-nav carousel-next" onclick="changeSlide(1)">›</button>
+  <div class="carousel-dots">
+    <div class="dot active" onclick="goSlide(0)"></div>
+    <div class="dot" onclick="goSlide(1)"></div>
+    <div class="dot" onclick="goSlide(2)"></div>
+  </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item"><div class="num">₹2,400 Cr+</div><div class="label">Disbursed Annually</div></div>
+  <div class="stat-item"><div class="num">5M+</div><div class="label">Students Benefited</div></div>
+  <div class="stat-item"><div class="num">50+</div><div class="label">Scholarship Schemes</div></div>
+  <div class="stat-item"><div class="num">28</div><div class="label">States Covered</div></div>
+  <div class="stat-item"><div class="num">99.4%</div><div class="label">Disbursal Success Rate</div></div>
+</div>
+
+<!-- SCHOLARSHIP CARDS -->
+<section class="cards-section" id="scholarships">
+  <div class="section-header">
+    <div class="section-tag">Explore</div>
+    <h2>Scholarship Categories</h2>
+    <p>Find the right scholarship for your journey — from international fellowships to state-funded support.</p>
+    <div class="divider"></div>
+  </div>
+  <div class="cards-grid">
+    <div class="card card-intl">
+      <div class="card-icon icon-intl">🌐</div>
+      <h3>International</h3>
+      <p>Fully funded programs at top universities worldwide for meritorious Indian students.</p>
+      <div class="card-count">142+</div>
+      <div class="card-count-label">Active Scholarships</div>
+      <a href="pages/international.html" class="btn-card">Explore →</a>
+    </div>
+    <div class="card card-natl">
+      <div class="card-icon icon-natl">🇮🇳</div>
+      <h3>National</h3>
+      <p>Central government schemes for SC, ST, OBC, minority and merit-cum-means students.</p>
+      <div class="card-count">38+</div>
+      <div class="card-count-label">Schemes Available</div>
+      <a href="pages/national.html" class="btn-card btn-card-gold">Explore →</a>
+    </div>
+    <div class="card card-state">
+      <div class="card-icon icon-state">🏛️</div>
+      <h3>State Sector</h3>
+      <p>State government scholarships tailored for local students with financial need and merit.</p>
+      <div class="card-count">200+</div>
+      <div class="card-count-label">State Programs</div>
+      <a href="pages/state.html" class="btn-card btn-card-blue">Explore →</a>
+    </div>
+    <div class="card card-pvt">
+      <div class="card-icon icon-pvt">🏢</div>
+      <h3>Private Sector</h3>
+      <p>Corporate CSR, NGO-funded and private foundation scholarships for all disciplines.</p>
+      <div class="card-count">95+</div>
+      <div class="card-count-label">Private Scholarships</div>
+      <a href="pages/private.html" class="btn-card btn-card-pink">Explore →</a>
+    </div>
+  </div>
+</section>
+
+<!-- APPLICATION TRACKER -->
+<section class="tracker-section" id="tracker">
+  <div class="section-header">
+    <div class="section-tag">Track</div>
+    <h2>Application Status Tracker</h2>
+    <p>Enter your Application ID or OTR number to check your scholarship status instantly.</p>
+    <div class="divider"></div>
+  </div>
+  <div class="tracker-box">
+    <div class="tracker-form">
+      <input type="text" id="app-id" placeholder="Enter Application ID  (e.g. NSP-2024-123456)">
+      <button onclick="trackApplication()">Track Status</button>
+    </div>
+    <div class="status-result" id="status-result"></div>
+    <p style="text-align:center;font-size:13px;color:var(--text-light);margin-top:8px">
+      For real tracking visit <a href="https://scholarships.gov.in" style="color:var(--green)">scholarships.gov.in</a>
+    </p>
+  </div>
+</section>
+
+<!-- ABOUT + TIMELINE -->
+<section class="about-section" id="about">
+  <div class="section-header">
+    <div class="section-tag">About</div>
+    <h2>How the Process Works</h2>
+    <p>A transparent, step-by-step process ensuring scholarships reach every eligible student.</p>
+    <div class="divider"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-img-wrap">
+      <div class="big-icon">🏛️</div>
+      <h3>NASS — National Academic Scholarship System</h3>
+      <p>We bridge the gap between scholarship opportunities and deserving students across all states and communities in India.</p>
+      <div class="mission-chips">
+        <div class="chip">SC / ST / OBC</div>
+        <div class="chip">Minority Students</div>
+        <div class="chip">Merit-cum-Means</div>
+        <div class="chip">Women in STEM</div>
+        <div class="chip">Rural Students</div>
+      </div>
+    </div>
+    <div>
+      <h3 style="font-size:26px;margin-bottom:32px">Application Timeline</h3>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+          <div class="tl-role">Student</div>
+          <h4>Submit Application</h4>
+          <p>Submit with documents at college within 15 days of admission. Complete Aadhaar biometric authentication at Meeseva.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+          <div class="tl-role">Student</div>
+          <h4>OTR Registration</h4>
+          <p>Complete One Time Registration (OTR) on the NSP using Aadhaar or EID. Valid for your entire academic career.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+          <div class="tl-role">College / Principal</div>
+          <h4>Verification &amp; Forwarding</h4>
+          <p>College verifies and forwards for biometric authentication, submits hardcopy to district office.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+          <div class="tl-role">District Officer</div>
+          <h4>Sanction &amp; Disbursal</h4>
+          <p>District welfare officer sanctions and releases funds. Utilization certificates due within 15 days of RTF credit.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ANNOUNCEMENTS -->
+<section class="announce-section" id="announcements">
+  <div class="section-header">
+    <div class="section-tag">Updates</div>
+    <h2>Announcements</h2>
+    <p>Latest scholarship notifications, deadlines and scheme launches.</p>
+    <div class="divider"></div>
+  </div>
+  <div class="announce-grid">
+    <div class="announce-col col-upcoming"><h3>🔔 Upcoming</h3></div>
+    <div class="announce-col col-current"><h3>✅ Current</h3></div>
+    <div class="announce-col col-previous"><h3>📋 Previous</h3></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo"><div class="icon">🎓</div><span>Scholarship Hub</span></div>
+      <p class="footer-desc">Comprehensive scholarship information for students globally. A Government of India initiative.</p>
+      <div class="social-links">
+        <a class="social-btn" href="#">f</a>
+        <a class="social-btn" href="#">𝕏</a>
+        <a class="social-btn" href="#">in</a>
+        <a class="social-btn" href="#">📸</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Scholarships</h4>
+      <a href="pages/international.html">International</a>
+      <a href="pages/national.html">National</a>
+      <a href="pages/state.html">State Sector</a>
+      <a href="pages/private.html">Private Sector</a>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <a href="#tracker">Track Application</a>
+      <a href="#announcements">Announcements</a>
+      <a href="pages/faq.html">FAQs</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="mailto:info@scholarshipportal.com">info@scholarshipportal.com</a>
+      <a href="tel:+918520807813">+91 85208 07813</a>
+      <a href="pages/contact.html">Contact Page</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Scholarship Hub. Government of India Initiative.</span>
+    <span>Privacy Policy &nbsp;·&nbsp; Terms of Use &nbsp;·&nbsp; Sitemap</span>
+  </div>
+</footer>
+
+<button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script src="assets/js/api.js"></script>
+<script src="assets/js/script.js"></script>
+<script>
+  // Load live announcements from backend on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof loadAnnouncements === 'function') loadAnnouncements();
+  });
+</script>
+</body>
+</html>

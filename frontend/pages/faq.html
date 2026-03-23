@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQs — Scholarship Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/main.css">
+<style>
+  .faq-hero {
+    background: linear-gradient(135deg, #0d4a2a 0%, #1a7a4a 60%, #2ea06a 100%);
+    padding: 60px 80px;
+    display: flex; align-items: center; justify-content: space-between;
+    min-height: 240px;
+  }
+  .faq-hero-content h2 { font-size: 44px; color: white; margin-bottom: 12px; }
+  .faq-hero-content p  { font-size: 15px; color: rgba(255,255,255,0.85); max-width: 560px; }
+  .faq-hero-icon { font-size: 90px; opacity: 0.2; }
+  .breadcrumb { font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 14px; }
+  .breadcrumb a { color: rgba(255,255,255,0.8); text-decoration: none; }
+
+  .faq-body { padding: 64px 80px; background: var(--off-white); }
+
+  /* Search */
+  .faq-search-wrap {
+    max-width: 560px; margin: 0 auto 52px;
+    display: flex; align-items: center; gap: 12px;
+    background: white; border: 1.5px solid var(--border);
+    border-radius: 12px; padding: 12px 20px;
+    box-shadow: 0 4px 20px rgba(26,122,74,0.08);
+  }
+  .faq-search-wrap input {
+    flex: 1; border: none; outline: none;
+    font-family: 'DM Sans', Arial, sans-serif; font-size: 15px; color: var(--text-dark);
+  }
+  .faq-search-wrap span { font-size: 18px; color: var(--text-light); }
+
+  /* Category tabs */
+  .faq-tabs {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    margin-bottom: 40px; justify-content: center;
+  }
+  .faq-tab {
+    padding: 9px 20px; border-radius: 24px; font-size: 13.5px; font-weight: 500;
+    border: 1.5px solid var(--border); background: white; color: var(--text-mid);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .faq-tab:hover, .faq-tab.active {
+    background: var(--green); color: white; border-color: var(--green);
+  }
+
+  /* Category section */
+  .faq-category { margin-bottom: 48px; }
+  .faq-category-title {
+    font-family: 'DM Sans', Arial, sans-serif; font-size: 16px; font-weight: 600;
+    color: var(--green); text-transform: uppercase; letter-spacing: 0.8px;
+    display: flex; align-items: center; gap: 8px;
+    padding-bottom: 12px; border-bottom: 2px solid var(--green-light);
+    margin-bottom: 20px;
+  }
+
+  /* Accordion */
+  .faq-item {
+    background: white; border: 1px solid var(--border);
+    border-radius: 12px; margin-bottom: 12px; overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .faq-item:hover { box-shadow: 0 4px 16px rgba(26,122,74,0.08); }
+  .faq-question {
+    width: 100%; background: none; border: none;
+    padding: 20px 24px; text-align: left; cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    font-family: 'DM Sans', Arial, sans-serif; font-size: 15px; font-weight: 500;
+    color: var(--text-dark); transition: color 0.2s;
+  }
+  .faq-question:hover { color: var(--green); }
+  .faq-question.open { color: var(--green); }
+  .faq-icon {
+    width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+    background: var(--green-light); color: var(--green);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 400; transition: transform 0.3s, background 0.2s;
+  }
+  .faq-question.open .faq-icon { transform: rotate(45deg); background: var(--green); color: white; }
+  .faq-answer {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.2s;
+    padding: 0 24px;
+  }
+  .faq-answer.open {
+    max-height: 400px;
+    padding: 0 24px 20px;
+  }
+  .faq-answer p { font-size: 14px; color: var(--text-mid); line-height: 1.75; }
+  .faq-answer a { color: var(--green); font-weight: 500; }
+
+  /* Still need help */
+  .help-banner {
+    background: linear-gradient(135deg, var(--green), var(--green-mid));
+    border-radius: 20px; padding: 48px; text-align: center;
+    margin-top: 16px;
+  }
+  .help-banner h3 { font-size: 28px; color: white; margin-bottom: 10px; }
+  .help-banner p  { color: rgba(255,255,255,0.85); font-size: 15px; margin-bottom: 28px; }
+  .help-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .btn-help-white {
+    background: white; color: var(--green);
+    padding: 13px 28px; border-radius: 10px; font-size: 14px; font-weight: 600;
+    text-decoration: none; transition: all 0.2s;
+  }
+  .btn-help-white:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+  .btn-help-outline {
+    background: transparent; color: white;
+    border: 2px solid rgba(255,255,255,0.6);
+    padding: 13px 28px; border-radius: 10px; font-size: 14px; font-weight: 600;
+    text-decoration: none; transition: all 0.2s;
+  }
+  .btn-help-outline:hover { background: rgba(255,255,255,0.15); }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <span>Government of India &nbsp;|&nbsp; Ministry of Electronics & Information Technology</span>
+  <div class="flag">
+    <div class="flag-stripe" style="background:#ff8c00"></div>
+    <div class="flag-stripe" style="background:#ffffff"></div>
+    <div class="flag-stripe" style="background:#138808"></div>
+    <span style="margin-left:6px">Digital India</span>
+  </div>
+</div>
+
+<nav>
+  <div class="logo">
+    <div class="logo-icon">🎓</div>
+    <div class="logo-text">
+      <h1>Scholarship Hub</h1>
+      <p>NATIONAL SCHOLARSHIP PORTAL</p>
+    </div>
+  </div>
+  <div class="nav-links">
+    <div class="nav-item"><a href="../index.html">Home</a></div>
+    <div class="nav-item">
+      <span>Scholarships <span class="caret">▾</span></span>
+      <div class="dropdown">
+        <a href="international.html">🌐 International</a>
+        <a href="national.html">🇮🇳 National</a>
+        <a href="state.html">🏛️ State</a>
+        <a href="private.html">🏢 Private</a>
+      </div>
+    </div>
+    <div class="nav-item"><a href="../index.html#tracker">Track Application</a></div>
+    <div class="nav-item"><a href="../index.html#announcements">Announcements</a></div>
+    <div class="nav-item">
+      <span>Help <span class="caret">▾</span></span>
+      <div class="dropdown">
+        <a href="faq.html">❓ FAQs</a>
+        <a href="contact.html">📞 Contact Us</a>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:12px;align-items:center">
+    <div class="nav-search">
+      <span class="nav-search-icon">🔍</span>
+      <input type="text" placeholder="Search scholarships...">
+    </div>
+    <a href="#" class="btn-apply">Apply Now</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="faq-hero">
+  <div class="faq-hero-content">
+    <div class="breadcrumb"><a href="../index.html">Home</a> › Help › FAQs</div>
+    <h2>Frequently Asked Questions</h2>
+    <p>Find answers to the most common questions about applying, tracking, and receiving scholarships on the National Scholarship Portal.</p>
+  </div>
+  <div class="faq-hero-icon">❓</div>
+</div>
+
+<div class="faq-body">
+
+  <!-- Search -->
+  <div class="faq-search-wrap">
+    <span>🔍</span>
+    <input type="text" id="faq-search" placeholder="Search your question here..." oninput="filterFAQs(this.value)">
+  </div>
+
+  <!-- Category tabs -->
+  <div class="faq-tabs">
+    <div class="faq-tab active" onclick="filterCategory('all', this)">All Questions</div>
+    <div class="faq-tab" onclick="filterCategory('registration', this)">Registration & OTR</div>
+    <div class="faq-tab" onclick="filterCategory('application', this)">Application Process</div>
+    <div class="faq-tab" onclick="filterCategory('documents', this)">Documents</div>
+    <div class="faq-tab" onclick="filterCategory('payment', this)">Payment & Disbursal</div>
+    <div class="faq-tab" onclick="filterCategory('technical', this)">Technical Issues</div>
+  </div>
+
+  <!-- Registration & OTR -->
+  <div class="faq-category" data-cat="registration">
+    <div class="faq-category-title">📋 Registration & OTR</div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        What is OTR (One Time Registration)?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>OTR (One Time Registration) is a unique reference number allotted to every student on the National Scholarship Portal. It is valid for your entire academic career — you only need to register once. From AY 2024-25, OTR is mandatory to apply for any scholarship on NSP. You can generate it using your Aadhaar number or Aadhaar Enrollment ID (EID).</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        How do I generate my OTR number?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Visit <a href="https://scholarships.gov.in" target="_blank">scholarships.gov.in</a> and click on "New Registration". Enter your Aadhaar number or Enrollment ID, verify via OTP sent to your Aadhaar-linked mobile number, fill in your basic details, and your OTR will be generated instantly. You can also use the NSP OTR App available on Google Play Store.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        Can I apply without Aadhaar?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Aadhaar is mandatory for OTR generation. However, if you do not have Aadhaar, you can use your Aadhaar Enrollment ID (EID) to register temporarily. You must complete Aadhaar authentication within a specified period to continue receiving scholarship benefits. Contact your district welfare office for assistance.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        I forgot my login password. How do I reset it?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>On the NSP login page, click "Forgot Password". Enter your registered mobile number or OTR/Application ID. An OTP will be sent to your Aadhaar-linked mobile number. Enter the OTP to verify, then set a new password. If your mobile number has changed, contact the NSP helpdesk at 0120-6619540.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Process -->
+  <div class="faq-category" data-cat="application">
+    <div class="faq-category-title">📝 Application Process</div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        When does the scholarship application window open?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Scholarship applications for AY 2024-25 are currently open on the National Scholarship Portal. Fresh applications typically open in September–October and close in November–December. Renewal applications follow a similar timeline. Always check the Announcements section for exact dates as they vary by scheme and state.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        Can I apply for more than one scholarship at a time?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>As per NSP guidelines, a student can apply for only one scholarship per academic year through the portal to avoid duplication. However, some private and state scholarships run independently — you may apply for those separately. Please read the eligibility criteria of each scheme carefully before applying.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        What is the difference between Fresh and Renewal applications?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>A <strong>Fresh application</strong> is for students who are applying for the scholarship for the first time. A <strong>Renewal application</strong> is for students who received the scholarship in the previous academic year and wish to continue receiving it. Renewal applications require uploading the previous year's result/marksheet and confirming continued eligibility.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        My college has not verified my application. What should I do?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>College verification is mandatory for your application to proceed. Visit your college's accounts or scholarship department and request them to verify your application on NSP. Colleges are required to verify within 30 days of the portal opening. If verification is delayed, escalate to your district welfare or nodal officer.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Documents -->
+  <div class="faq-category" data-cat="documents">
+    <div class="faq-category-title">📄 Documents Required</div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        What documents are required for a national scholarship application?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>The standard documents required are: Aadhaar card, caste/category certificate (SC/ST/OBC), income certificate (issued by a gazetted officer), previous year marksheet, bonafide/admission letter from college, bank account details (in the student's name), and passport-size photograph. Some schemes may require additional documents — check the scheme-specific guidelines.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        What is the income limit to be eligible for scholarships?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Income limits vary by scheme. For most central government post-matric scholarships (SC/ST/OBC), the annual family income limit is ₹2.5 lakh. For minority scholarships, it is ₹1 lakh. The Central Sector Scheme for merit students has a limit of ₹8 lakh. Always check the specific scheme's eligibility before applying.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        My caste certificate is in my state language. Will it be accepted?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Yes, caste certificates issued in regional/state languages are accepted. However, it is advisable to also have a certified English translation, especially if you are applying for scholarships in a different state. The certificate must be issued by a competent authority (Tahsildar or above) and should be current/valid.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment -->
+  <div class="faq-category" data-cat="payment">
+    <div class="faq-category-title">💰 Payment & Disbursal</div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        How long does it take to receive the scholarship amount?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>After your application is sanctioned by the district officer, the amount is typically credited to your bank account within 7–30 working days via Direct Benefit Transfer (DBT). The timeline depends on the scheme, state, and banking processing time. You can track your payment status using your Application ID on this portal.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        The scholarship amount was not credited to my bank account. What should I do?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>First, check your application status on NSP to confirm it shows "Sanctioned" or "Payment Transferred". If yes, verify that your bank account is Aadhaar-linked and NPCI-mapped. Contact your bank if the amount hasn't arrived within 10 working days of the payment date. You can also raise a grievance on the NSP portal or call the helpdesk at 0120-6619540.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        Can the scholarship be credited to a joint account?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>No, scholarship amounts must be credited to a bank account held solely in the student's name. Joint accounts are not accepted. If you are a minor, a guardian's account may be accepted in some schemes — check the specific scheme guidelines. Ensure your account is active, linked to Aadhaar, and NPCI-mapped for DBT.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Technical -->
+  <div class="faq-category" data-cat="technical">
+    <div class="faq-category-title">💻 Technical Issues</div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        The NSP portal is showing an error when I try to submit. What should I do?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Try the following steps: clear your browser cache and cookies, use Google Chrome or Mozilla Firefox (recommended browsers), disable browser extensions, and try again. Ensure all mandatory fields are filled and documents are under the specified file size (usually 200 KB per document). If the issue persists, call the NSP helpdesk at 0120-6619540 or email <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="bbd3ded7cbdfdec8d0fbd5c8cb95dcd4cd95d2d5">[email&#160;protected]</a>.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        I am not receiving OTP on my mobile number. How do I fix this?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Ensure your mobile number is the same one linked to your Aadhaar. Check your signal strength and that your number is active. OTPs expire in 10 minutes — request a new one if it has expired. If your Aadhaar-linked mobile number has changed, visit the nearest Aadhaar Seva Kendra (CSC) to update it before applying.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        How do I update my bank account details on the portal?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Log in to your NSP account and go to your profile/application section. Bank account details can be updated before the application is forwarded by your college. Once forwarded, you must contact your college or district officer to make corrections. Always double-check your IFSC code and account number before saving.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help banner -->
+  <div class="help-banner">
+    <h3>Still have questions?</h3>
+    <p>Our helpdesk team is available Monday–Friday, 9:00 AM to 6:00 PM to assist you.</p>
+    <div class="help-btns">
+      <a href="contact.html" class="btn-help-white">📞 Contact Us</a>
+      <a href="../index.html#tracker" class="btn-help-outline">🔍 Track Application</a>
+    </div>
+  </div>
+
+</div><!-- end faq-body -->
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo"><div class="icon">🎓</div><span>Scholarship Hub</span></div>
+      <p class="footer-desc">Comprehensive scholarship information for students globally. A Government of India initiative.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Scholarships</h4>
+      <a href="international.html">International</a>
+      <a href="national.html">National</a>
+      <a href="state.html">State Sector</a>
+      <a href="private.html">Private Sector</a>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <a href="../index.html#tracker">Track Application</a>
+      <a href="../index.html#announcements">Announcements</a>
+      <a href="faq.html">FAQs</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="/cdn-cgi/l/email-protection#0e676068614e7d6d6661626f7c7d66677e7e617c7a6f62206d6163"><span class="__cf_email__" data-cfemail="462f2820290635252e292a2734352e2f3636293432272a6825292b">[email&#160;protected]</span></a>
+      <a href="tel:+918520807813">+91 85208 07813</a>
+      <a href="contact.html">Contact Page</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Scholarship Hub. Government of India Initiative.</span>
+    <span>Privacy Policy &nbsp;·&nbsp; Terms of Use</span>
+  </div>
+</footer>
+
+<button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="../assets/js/script.js"></script>
+<script>
+  function toggleFAQ(btn) {
+    const answer = btn.nextElementSibling;
+    const isOpen = answer.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.faq-answer.open').forEach(a => a.classList.remove('open'));
+    document.querySelectorAll('.faq-question.open').forEach(b => b.classList.remove('open'));
+    // Open clicked one if it was closed
+    if (!isOpen) {
+      answer.classList.add('open');
+      btn.classList.add('open');
+    }
+  }
+
+  function filterCategory(cat, el) {
+    document.querySelectorAll('.faq-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('.faq-category').forEach(c => {
+      c.style.display = (cat === 'all' || c.dataset.cat === cat) ? 'block' : 'none';
+    });
+  }
+
+  function filterFAQs(query) {
+    const q = query.toLowerCase();
+    document.querySelectorAll('.faq-item').forEach(item => 

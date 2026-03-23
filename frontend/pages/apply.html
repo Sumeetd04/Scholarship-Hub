@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Apply for scholarships on Scholarship Hub. Submit your application for national, state, international and private scholarships.">
+  <title>Apply for Scholarship — Scholarship Hub</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <style>
+    body { background: var(--off-white); }
+
+    /* ── Page hero ── */
+    .apply-hero {
+      background: linear-gradient(135deg,#0d4a2a 0%,#1a7a4a 60%,#2ea06a 100%);
+      padding: 48px 80px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .apply-hero h2 { font-size: 38px; color: white; margin-bottom: 8px; }
+    .apply-hero p  { font-size: 14px; color: rgba(255,255,255,.85); }
+    .apply-hero-icon { font-size: 80px; opacity: .2; }
+
+    /* ── Step bar ── */
+    .step-bar {
+      background: white; border-bottom: 1px solid var(--border);
+      padding: 0 80px; display: flex; align-items: stretch;
+    }
+    .step-btn {
+      padding: 18px 28px; font-size: 13.5px; font-weight: 500;
+      color: var(--text-light); border: none; background: none;
+      cursor: pointer; border-bottom: 3px solid transparent;
+      display: flex; align-items: center; gap: 8px; transition: all .2s;
+      white-space: nowrap;
+    }
+    .step-btn .s-num {
+      width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center; font-size: 12px;
+      font-weight: 700; flex-shrink: 0; transition: all .2s;
+    }
+    .step-btn.active { color: var(--green); border-bottom-color: var(--green); }
+    .step-btn.active .s-num { background: var(--green); border-color: var(--green); color: white; }
+    .step-btn.done   { color: var(--text-mid); }
+    .step-btn.done .s-num { background: var(--green-light); border-color: var(--green); color: var(--green); }
+    .step-connector { width: 32px; border-bottom: 1px dashed var(--border); align-self: center; flex-shrink: 0; }
+
+    /* ── Form layout ── */
+    .apply-body { max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    /* ── Scholarship selector card ── */
+    .sch-selector { background: white; border: 1.5px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 24px; }
+    .sch-selector h3 { font-family: 'DM Sans',Arial,sans-serif; font-size: 16px; font-weight: 600; color: var(--text-dark); margin-bottom: 16px; }
+    .sch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .sch-option {
+      border: 2px solid var(--border); border-radius: 12px; padding: 16px; cursor: pointer;
+      transition: all .2s; display: flex; align-items: flex-start; gap: 12px;
+    }
+    .sch-option:hover { border-color: var(--green); background: var(--green-light); }
+    .sch-option.selected { border-color: var(--green); background: var(--green-light); }
+    .sch-option input[type=radio] { margin-top: 3px; accent-color: var(--green); flex-shrink: 0; }
+    .sch-title { font-size: 13.5px; font-weight: 600; color: var(--text-dark); }
+    .sch-meta  { font-size: 12px; color: var(--text-light); margin-top: 3px; }
+    .sch-amount { font-size: 12px; color: var(--green); font-weight: 600; margin-top: 4px; }
+    .loading-sch { text-align: center; padding: 32px; color: var(--text-light); font-size: 14px; }
+
+    /* ── Form sections ── */
+    .form-section {
+      background: white; border: 1px solid var(--border); border-radius: 16px;
+      padding: 28px; margin-bottom: 20px;
+    }
+    .form-section-title {
+      font-family: 'DM Sans',Arial,sans-serif; font-size: 14px; font-weight: 700;
+      color: var(--text-light); text-transform: uppercase; letter-spacing: .6px;
+      margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label {
+      display: block; font-size: 12.5px; font-weight: 600;
+      color: var(--text-mid); margin-bottom: 7px; letter-spacing: .3px;
+    }
+    .form-group label .req { color: #c0392b; margin-left: 2px; }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%; padding: 12px 14px; border: 1.5px solid var(--border);
+      border-radius: 10px; font-family: inherit; font-size: 14px;
+      color: var(--text-dark); outline: none; transition: border-color .2s;
+      background: white;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { border-color: var(--green); }
+    .form-group input.err,
+    .form-group select.err { border-color: #c0392b; }
+    .form-group textarea { resize: vertical; min-height: 90px; }
+    .field-hint { font-size: 11.5px; color: var(--text-light); margin-top: 5px; }
+    .field-err  { font-size: 12px; color: #c0392b; margin-top: 5px; display: none; }
+    .field-err.show { display: block; }
+
+    /* ── Step panels ── */
+    .step-panel { display: none; }
+    .step-panel.active { display: block; }
+
+    /* ── Navigation buttons ── */
+    .form-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border);
+    }
+    .btn-prev {
+      background: white; color: var(--text-mid); border: 1.5px solid var(--border);
+      padding: 13px 28px; border-radius: 10px; font-family: inherit; font-size: 14px;
+      font-weight: 600; cursor: pointer; transition: all .2s;
+    }
+    .btn-prev:hover { border-color: var(--green); color: var(--green); }
+    .btn-next {
+      background: var(--green); color: white; border: none;
+      padding: 13px 32px; border-radius: 10px; font-family: inherit; font-size: 14px;
+      font-weight: 600; cursor: pointer; transition: background .2s;
+    }
+    .btn-next:hover { background: var(--green-mid); }
+    .btn-next:disabled { opacity: .6; cursor: not-allowed; }
+    .step-info { font-size: 13px; color: var(--text-light); }
+
+    /* ── Review panel ── */
+    .review-section { background: var(--off-white); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+    .review-title { font-size: 13px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 14px; }
+    .review-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .review-item label { font-size: 11px; color: var(--text-light); display: block; margin-bottom: 3px; }
+    .review-item p { font-size: 13.5px; font-weight: 500; color: var(--text-dark); }
+    .review-sch-card {
+      background: white; border: 1.5px solid var(--green); border-radius: 12px;
+      padding: 18px; margin-bottom: 16px; display: flex; align-items: center; gap: 14px;
+    }
+    .review-sch-icon { width: 48px; height: 48px; background: var(--green-light); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .declaration { background: #fff8e1; border: 1px solid #f0d060; border-radius: 10px; padding: 16px; margin-bottom: 20px; font-size: 13px; color: #7a5c00; line-height: 1.7; }
+    .declaration label { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
+    .declaration input[type=checkbox] { margin-top: 3px; accent-color: var(--green); flex-shrink: 0; }
+
+    /* ── Success screen ── */
+    .success-screen { display: none; text-align: center; padding: 60px 40px; }
+    .success-screen.show { display: block; }
+    .success-icon { font-size: 72px; margin-bottom: 20px; }
+    .success-screen h2 { font-size: 32px; color: var(--text-dark); margin-bottom: 12px; }
+    .success-screen p { font-size: 15px; color: var(--text-light); margin-bottom: 8px; }
+    .app-id-display {
+      background: var(--green-light); color: var(--green); font-size: 22px; font-weight: 700;
+      padding: 14px 32px; border-radius: 12px; display: inline-block; margin: 20px 0;
+      letter-spacing: 1px; border: 1.5px solid var(--green);
+    }
+    .success-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 28px; }
+
+    /* ── App type toggle ── */
+    .app-type-row { display: flex; gap: 12px; margin-bottom: 20px; }
+    .app-type-btn {
+      flex: 1; padding: 14px; border: 2px solid var(--border); border-radius: 10px;
+      background: white; cursor: pointer; text-align: center; transition: all .2s;
+    }
+    .app-type-btn:hover { border-color: var(--green); }
+    .app-type-btn.selected { border-color: var(--green); background: var(--green-light); }
+    .app-type-btn .atype-icon { font-size: 24px; margin-bottom: 6px; }
+    .app-type-btn .atype-label { font-size: 14px; font-weight: 600; color: var(--text-dark); }
+    .app-type-btn .atype-sub   { font-size: 12px; color: var(--text-light); margin-top: 3px; }
+
+    /* ── Progress bar ── */
+    .progress-track { height: 3px; background: var(--border); position: relative; }
+    .progress-fill  { height: 100%; background: var(--green); transition: width .4s ease; }
+
+    @media (max-width: 768px) {
+      .apply-hero { padding: 32px 20px; }
+      .apply-hero h2 { font-size: 26px; }
+      .apply-hero-icon { display: none; }
+      .step-bar { padding: 0 12px; overflow-x: auto; }
+      .step-btn { padding: 14px 12px; font-size: 12px; }
+      .step-connector { width: 16px; }
+      .form-row, .form-row-3, .sch-grid, .review-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <span>Government of India &nbsp;|&nbsp; Ministry of Electronics &amp; Information Technology</span>
+  <div class="flag">
+    <div class="flag-stripe" style="background:#ff8c00"></div>
+    <div class="flag-stripe" style="background:#fff"></div>
+    <div class="flag-stripe" style="background:#138808"></div>
+    <span style="margin-left:6px">Digital India</span>
+  </div>
+</div>
+
+<nav>
+  <div class="logo">
+    <a href="../index.html" style="display:flex;align-items:center;gap:14px;text-decoration:none">
+      <div class="logo-icon">🎓</div>
+      <div class="logo-text"><h1>Scholarship Hub</h1><p>NATIONAL SCHOLARSHIP PORTAL</p></div>
+    </a>
+  </div>
+  <div class="nav-links">
+    <div class="nav-item"><a href="../index.html">Home</a></div>
+    <div class="nav-item"><a href="national.html">Scholarships</a></div>
+    <div class="nav-item"><a href="dashboard.html">My Dashboard</a></div>
+  </div>
+  <div class="nav-right" style="display:flex;gap:12px;align-items:center">
+    <a href="dashboard.html" class="btn-apply">My Dashboard</a>
+  </div>
+  <button id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- Hero -->
+<div class="apply-hero">
+  <div>
+    <div class="breadcrumb"><a href="../index.html">Home</a> › <a href="dashboard.html">Dashboard</a> › Apply</div>
+    <h2>Scholarship Application</h2>
+    <p>Complete the form below to submit your scholarship application. All fields marked * are required.</p>
+  </div>
+  <div class="apply-hero-icon">📋</div>
+</div>
+
+<!-- Progress bar -->
+<div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:25%"></div></div>
+
+<!-- Step bar -->
+<div class="step-bar">
+  <button class="step-btn active" id="step-btn-1" onclick="goStep(1)">
+    <span class="s-num">1</span> Select Scholarship
+  </button>
+  <div class="step-connector"></div>
+  <button class="step-btn" id="step-btn-2" onclick="goStep(2)">
+    <span class="s-num">2</span> Personal Details
+  </button>
+  <div class="step-connector"></div>
+  <button class="step-btn" id="step-btn-3" onclick="goStep(3)">
+    <span class="s-num">3</span> Academic & Bank
+  </button>
+  <div class="step-connector"></div>
+  <button class="step-btn" id="step-btn-4" onclick="goStep(4)">
+    <span class="s-num">4</span> Review & Submit
+  </button>
+</div>
+
+<!-- Form body -->
+<div class="apply-body">
+
+  <!-- SUCCESS SCREEN -->
+  <div class="success-screen" id="success-screen">
+    <div class="success-icon">🎉</div>
+    <h2>Application Submitted!</h2>
+    <p>Your scholarship application has been received successfully.</p>
+    <p>Your Application ID is:</p>
+    <div class="app-id-display" id="success-app-id">—</div>
+    <p style="font-size:13px;color:var(--text-light);max-width:480px;margin:0 auto">
+      Save this ID to track your application status. Your college will verify it within 30 days.
+    </p>
+    <div class="success-actions">
+      <a href="dashboard.html" class="btn-next" style="display:inline-block;text-decoration:none">Go to Dashboard →</a>
+      <a href="../index.html#tracker" class="btn-prev" style="display:inline-block;text-decoration:none">Track Application</a>
+    </div>
+  </div>
+
+  <!-- STEP 1: Select Scholarship -->
+  <div class="step-panel active" id="step-1">
+    <div class="sch-selector">
+      <h3>Choose Application Type</h3>
+      <div class="app-type-row">
+        <div class="app-type-btn selected" id="type-fresh" onclick="setAppType('fresh')">
+          <div class="atype-icon">📝</div>
+          <div class="atype-label">Fresh Application</div>
+          <div class="atype-sub">Applying for the first time</div>
+        </div>
+        <div class="app-type-btn" id="type-renewal" onclick="setAppType('renewal')">
+          <div class="atype-icon">🔄</div>
+          <div class="atype-label">Renewal Application</div>
+          <div class="atype-sub">Continuing from last year</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sch-selector">
+      <h3>Select a Scholarship <span class="req" style="color:#c0392b">*</span></h3>
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+        <button class="btn-filter" style="padding:8px 16px;font-size:13px" onclick="filterSchType('all')">All</button>
+        <button class="btn-card-outline" style="padding:8px 16px;font-size:13px" onclick="filterSchType('national')">🇮🇳 National</button>
+        <button class="btn-card-outline" style="padding:8px 16px;font-size:13px" onclick="filterSchType('international')">🌐 International</button>
+        <button class="btn-card-outline" style="padding:8px 16px;font-size:13px" onclick="filterSchType('state')">🏛️ State</button>
+        <button class="btn-card-outline" style="padding:8px 16px;font-size:13px" onclick="filterSchType('private')">🏢 Private</button>
+      </div>
+      <div id="sch-list"><div class="loading-sch">Loading scholarships…</div></div>
+      <div class="field-err show" id="sch-err" style="display:none;margin-top:12px">Please select a scholarship to continue.</div>
+    </div>
+
+    <div class="form-nav">
+      <span class="step-info">Step 1 of 4</span>
+      <button class="btn-next" onclick="nextStep(1)">Next: Personal Details →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Personal Details -->
+  <div class="step-panel" id="step-2">
+    <div class="form-section">
+      <div class="form-section-title">👤 Personal Information</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name <span class="req">*</span></label>
+          <input type="text" id="full_name" placeholder="As per Aadhaar card">
+          <div class="field-err" id="err-full_name">Full name is required.</div>
+        </div>
+        <div class="form-group">
+          <label>Date of Birth <span class="req">*</span></label>
+          <input type="date" id="dob">
+          <div class="field-err" id="err-dob">Date of birth is required.</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Gender <span class="req">*</span></label>
+          <select id="gender">
+            <option value="">Select gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other / Prefer not to say</option>
+          </select>
+          <div class="field-err" id="err-gender">Please select your gender.</div>
+        </div>
+        <div class="form-group">
+          <label>Category <span class="req">*</span></label>
+          <select id="category">
+            <option value="">Select category</option>
+            <option value="SC">SC (Scheduled Caste)</option>
+            <option value="ST">ST (Scheduled Tribe)</option>
+            <option value="OBC">OBC (Other Backward Classes)</option>
+            <option value="Minority">Minority</option>
+            <option value="General">General / Open</option>
+            <option value="EWS">EWS (Economically Weaker Section)</option>
+          </select>
+          <div class="field-err" id="err-category">Please select your category.</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Mobile Number <span class="req">*</span></label>
+          <input type="tel" id="mobile" placeholder="+91 98765 43210" maxlength="13">
+          <div class="field-err" id="err-mobile">Valid mobile number is required.</div>
+        </div>
+        <div class="form-group">
+          <label>Email Address <span class="req">*</span></label>
+          <input type="email" id="email" placeholder="you@example.com">
+          <div class="field-err" id="err-email">Valid email is required.</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Aadhaar Number <span class="req">*</span></label>
+          <input type="text" id="aadhaar_no" placeholder="12-digit Aadhaar number" maxlength="12">
+          <div class="field-hint">Required for OTR verification on NSP.</div>
+          <div class="field-err" id="err-aadhaar_no">Valid 12-digit Aadhaar number is required.</div>
+        </div>
+        <div class="form-group">
+          <label>State / UT <span class="req">*</span></label>
+          <select id="state">
+            <option value="">Select your state</option>
+            <option>Andhra Pradesh</option><option>Arunachal Pradesh</option>
+            <option>Assam</option><option>Bihar</option><option>Chhattisgarh</option>
+            <option>Goa</option><option>Gujarat</option><option>Haryana</option>
+            <option>Himachal Pradesh</option><option>Jharkhand</option>
+            <option>Karnataka</option><option>Kerala</option>
+            <option>Madhya Pradesh</option><option>Maharashtra</option>
+            <option>Manipur</option><option>Meghalaya</option><option>Mizoram</option>
+            <option>Nagaland</option><option>Odisha</option><option>Punjab</option>
+            <option>Rajasthan</option><option>Sikkim</option><option>Tamil Nadu</option>
+            <option>Telangana</option><option>Tripura</option>
+            <option>Uttar Pradesh</option><option>Uttarakhand</option>
+            <option>West Bengal</option><option>Delhi</option>
+            <option>Jammu & Kashmir</option><option>Ladakh</option>
+            <option>Puducherry</option><option>Chandigarh</option>
+          </select>
+          <div class="field-err" id="err-state">Please select your state.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-nav">
+      <button class="btn-prev" onclick="prevStep(2)">← Back</button>
+      <span class="step-info">Step 2 of 4</span>
+      <button class="btn-next" onclick="nextStep(2)">Next: Academic Details →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Academic & Bank -->
+  <div class="step-panel" id="step-3">
+    <div class="form-section">
+      <div class="form-section-title">🎓 Academic Information</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>College / Institution Name <span class="req">*</span></label>
+          <input type="text" id="college_name" placeholder="e.g. Mumbai University">
+          <div class="field-err" id="err-college_name">College name is required.</div>
+        </div>
+        <div class="form-group">
+          <label>Course / Programme <span class="req">*</span></label>
+          <input type="text" id="course" placeholder="e.g. B.Tech Computer Science">
+          <div class="field-err" id="err-course">Course name is required.</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Academic Year <span class="req">*</span></label>
+          <select id="academic_year">
+            <option value="">Select year</option>
+            <option value="2024-25">2024-25</option>
+            <option value="2023-24">2023-24</option>
+            <option value="2025-26">2025-26</option>
+          </select>
+          <div class="field-err" id="err-academic_year">Please select academic year.</div>
+        </div>
+        <div class="form-group">
+          <label>Percentage / CGPA in Last Exam <span class="req">*</span></label>
+          <input type="number" id="percentage" placeholder="e.g. 78.5" min="0" max="100" step="0.01">
+          <div class="field-hint">Enter percentage. If CGPA, multiply by 10.</div>
+          <div class="field-err" id="err-percentage">Valid percentage (0–100) is required.</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Annual Family Income (₹) <span class="req">*</span></label>
+          <input type="number" id="family_income" placeholder="e.g. 150000" min="0">
+          <div class="field-hint">As per income certificate issued by competent authority.</div>
+          <div class="field-err" id="err-family_income">Annual family income is required.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">🏦 Bank Account Details</div>
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:18px">
+        Scholarship amount will be credited directly to this account via DBT. Must be in your name only.
+      </p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Bank Name <span class="req">*</span></label>
+          <input type="text" id="bank_name" placeholder="e.g. State Bank of India">
+          <div class="field-err" id="err-bank_name">Bank name is required.</div>
+        </div>
+        <div class="form-group">
+          <label>Account Number <span class="req">*</span></label>
+          <input type="text" id="bank_account" placeholder="Enter account number" maxlength="20">
+          <div class="field-err" id="err-bank_account">Valid account number is required.</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>IFSC Code <span class="req">*</span></label>
+          <input type="text" id="ifsc_code" placeholder="e.g. SBIN0001234" maxlength="11" style="text-transform:uppercase"
+                 oninput="this.value=this.value.toUpperCase()">
+          <div class="field-hint">11-character code printed on your chequebook.</div>
+          <div class="field-err" id="err-ifsc_code">Valid 11-character IFSC code is required.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-nav">
+      <button class="btn-prev" onclick="prevStep(3)">← Back</button>
+      <span class="step-info">Step 3 of 4</span>
+      <button class="btn-next" onclick="nextStep(3)">Next: Review & Submit →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: Review & Submit -->
+  <div class="step-panel" id="step-4">
+
+    <!-- Selected scholarship -->
+    <div class="review-sch-card" id="review-sch-card">
+      <div class="review-sch-icon" id="review-sch-icon">🎓</div>
+      <div>
+        <div style="font-size:15px;font-weight:600;color:var(--text-dark)" id="review-sch-title">—</div>
+        <div style="font-size:13px;color:var(--text-light);margin-top:3px" id="review-sch-meta">—</div>
+        <div style="font-size:13px;color:var(--green);font-weight:600;margin-top:4px" id="review-sch-amount">—</div>
+      </div>
+      <div style="margin-left:auto">
+        <span class="s-badge badge-open" id="review-sch-type">—</span>
+      </div>
+    </div>
+
+    <div class="review-section">
+      <div class="review-title">Personal Details</div>
+      <div class="review-grid">
+        <div class="review-item"><label>Full Name</label><p id="rv-full_name">—</p></div>
+        <div class="review-item"><label>Date of Birth</label><p id="rv-dob">—</p></div>
+        <div class="review-item"><label>Gender</label><p id="rv-gender">—</p></div>
+        <div class="review-item"><label>Category</label><p id="rv-category">—</p></div>
+        <div class="review-item"><label>Mobile</label><p id="rv-mobile">—</p></div>
+        <div class="review-item"><label>Email</label><p id="rv-email">—</p></div>
+        <div class="review-item"><label>Aadhaar No.</label><p id="rv-aadhaar">—</p></div>
+        <div class="review-item"><label>State</label><p id="rv-state">—</p></div>
+      </div>
+    </div>
+
+    <div class="review-section">
+      <div class="review-title">Academic & Bank Details</div>
+      <div class="review-grid">
+        <div class="review-item"><label>College</label><p id="rv-college">—</p></div>
+        <div class="review-item"><label>Course</label><p id="rv-course">—</p></div>
+        <div class="review-item"><label>Academic Year</label><p id="rv-year">—</p></div>
+        <div class="review-item"><label>Percentage</label><p id="rv-percent">—</p></div>
+        <div class="review-item"><label>Family Income</label><p id="rv-income">—</p></div>
+        <div class="review-item"><label>Bank Name</label><p id="rv-bank">—</p></div>
+        <div class="review-item"><label>Account No.</label><p id="rv-acct">—</p></div>
+        <div class="review-item"><label>IFSC Code</label><p id="rv-ifsc">—</p></div>
+      </div>
+    </div>
+
+    <div class="declaration">
+      <label>
+        <input type="checkbox" id="declaration-check">
+        <span>
+          I hereby declare that all the information provided in this application is true, correct and complete to the best of my knowledge. I understand that any false information will result in cancellation of the scholarship and legal action as per applicable laws. I have not availed/applied for any other scholarship from the National Scholarship Portal for this academic year.
+        </span>
+      </label>
+    </div>
+
+    <div class="form-nav">
+      <button class="btn-prev" onclick="prevStep(4)">← Back</button>
+      <span class="step-info">Step 4 of 4</span>
+      <button class="btn-next" id="submit-btn" onclick="submitApplication()">Submit Application ✓</button>
+    </div>
+  </div>
+
+</div><!-- end apply-body -->
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo"><div class="icon">🎓</div><span>Scholarship Hub</span></div>
+      <p class="footer-desc">Comprehensive scholarship information for students globally.</p>
+    </div>
+    <div class="footer-col"><h4>Scholarships</h4><a href="international.html">International</a><a href="national.html">National</a><a href="state.html">State</a><a href="private.html">Private</a></div>
+    <div class="footer-col"><h4>Help</h4><a href="faq.html">FAQs</a><a href="contact.html">Contact Us</a><a href="../index.html#tracker">Track Application</a></div>
+    <div class="footer-col"><h4>My Account</h4><a href="dashboard.html">Dashboard</a><a href="login.html">Login</a><a href="register.html">Register</a></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Scholarship Hub. Government of India Initiative.</span>
+    <span>Privacy Policy &nbsp;·&nbsp; Terms of Use</span>
+  </div>
+</footer>
+
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/script.js"></script>
+<script>
+// ── Guard: must be logged in ──────────────────────────────────
+if (!Auth.isLoggedIn()) window.location.href = 'login.html?redirect=apply.html';
+
+// ── State ─────────────────────────────────────────────────────
+let currentStep = 1;
+let selectedSch = null;
+let appType     = 'fresh';
+let allScholarships = [];
+let currentFilter   = 'all';
+
+// ── Pre-fill from logged-in user ──────────────────────────────
+document.addEventListener('DOMContentLoaded', async () => {
+  const user = Auth.user();
+  if (user) {
+    document.getElementById('full_name').value = user.full_name || '';
+    document.getElementById('email').value     = user.email     || '';
+  }
+
+  // Load profile for more fields
+  const profile = await apiFetch('/auth/profile');
+  if (profile.success) {
+    const u = profile.user;
+    if (u.mobile)     document.getElementById('mobile').value     = u.mobile;
+    if (u.aadhaar_no) document.getElementById('aadhaar_no').value = u.aadhaar_no;
+  }
+
+  // Load scholarships
+  await loadAllScholarships();
+
+  // Check URL params for pre-selected scholarship
+  const params = new URLSearchParams(window.location.search);
+  const schId  = params.get('scholarship_id');
+  if (schId) {
+    setTimeout(() => {
+      const radio = document.querySelector(`input[name="sch-radio"][value="${schId}"]`);
+      if (radio) { radio.click(); radio.closest('.sch-option').scrollIntoView({behavior:'smooth',block:'center'}); }
+    }, 500);
+  }
+});
+
+// ── Load scholarships ─────────────────────────────────────────
+async function loadAllScholarships() {
+  const types = ['national','international','state','private'];
+  allScholarships = [];
+  for (const t of types) {
+    const d = await apiFetch(`/scholarships?type=${t}&limit=50`);
+    if (d.success && d.scholarships) allScholarships.push(...d.scholarships);
+  }
+  renderScholarships(allScholarships);
+}
+
+function renderScholarships(list) {
+  const container = document.getElementById('sch-list');
+  if (!list.length) {
+    container.innerHTML = '<div class="loading-sch">No scholarships available.</div>';
+    return;
+  }
+  const icons = { international:'🌐', national:'🇮🇳', state:'🏛️', private:'🏢' };
+  container.innerHTML = '<div class="sch-grid">' + list.map(s => `
+    <label class="sch-option ${selectedSch?.id == s.id ? 'selected' : ''}" onclick="selectSch(${s.id})">
+      <input type="radio" name="sch-radio" value="${s.id}" ${selectedSch?.id == s.id ? 'checked' : ''} style="display:none">
+      <div style="font-size:22px">${icons[s.type]||'🎓'}</div>
+      <div style="flex:1">
+        <div class="sch-title">${_esc(s.title)}</div>
+        <div class="sch-meta">${_esc(s.provider)} · ${_esc(s.level||'All Levels')}</div>
+        <div class="sch-amount">💰 ${_esc(s.amount||'See details')}</div>
+        ${s.deadline ? `<div class="sch-meta">📅 Deadline: ${_fmtDate(s.deadline)}</div>` : ''}
+      </div>
+      <span class="s-badge ${s.status==='open'?'badge-open':'badge-closing'}" style="font-size:10px">${s.status==='open'?'Open':'Closed'}</span>
+    </label>`).join('') + '</div>';
+}
+
+function filterSchType(type) {
+  currentFilter = type;
+  // Update filter buttons
+  document.querySelectorAll('.step-panel .btn-filter, .step-panel .btn-card-outline').forEach(b => {
+    b.className = 'btn-card-outline';
+    b.style.cssText = 'padding:8px 16px;font-size:13px';
+  });
+  event.target.className = 'btn-filter';
+  event.target.style.cssText = 'padding:8px 16px;font-size:13px';
+
+  const filtered = type === 'all' ? allScholarships : allScholarships.filter(s => s.type === type);
+  renderScholarships(filtered);
+}
+
+function selectSch(id) {
+  selectedSch = allScholarships.find(s => s.id == id);
+  document.querySelectorAll('.sch-option').forEach(o => o.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  document.getElementById('sch-err').style.display = 'none';
+}
+
+// ── App type ──────────────────────────────────────────────────
+function setAppType(type) {
+  appType = type;
+  document.getElementById('type-fresh').classList.toggle('selected',   type === 'fresh');
+  document.getElementById('type-renewal').classList.toggle('selected', type === 'renewal');
+}
+
+// ── Step navigation ───────────────────────────────────────────
+function goStep(n) {
+  if (n > currentStep) return; // Can't skip forward
+  currentStep = n;
+  renderStep();
+}
+
+function nextStep(from) {
+  if (!validateStep(from)) return;
+  currentStep = from + 1;
+  if (currentStep === 4) buildReview();
+  renderStep();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function prevStep(from) {
+  currentStep = from - 1;
+  renderStep();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderStep() {
+  // Panels
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(`step-${currentStep}`)?.classList.add('active');
+
+  // Step buttons
+  for (let i = 1; i <= 4; i++) {
+    const btn = document.getElementById(`step-btn-${i}`);
+    btn.className = 'step-btn';
+    if (i < currentStep) btn.classList.add('done');
+    if (i === currentStep) btn.classList.add('active');
+  }
+
+  // Progress bar
+  document.getElementById('progress-fill').style.width = (currentStep * 25) + '%';
+}
+
+// ── Validation ────────────────────────────────────────────────
+function validateStep(step) {
+  if (step === 1) {
+    if (!selectedSch) {
+      document.getElementById('sch-err').style.display = 'block';
+      return false;
+    }
+    return true;
+  }
+
+  if (step === 2) {
+    const checks = [
+      { id: 'full_name',  err: 'err-full_name',  test: v => v.trim().length >= 2 },
+      { id: 'dob',        err: 'err-dob',         test: v => !!v },
+      { id: 'gender',     err: 'err-gender',      test: v => !!v },
+      { id: 'category',   err: 'err-category',    test: v => !!v },
+      { id: 'mobile',     err: 'err-mobile',       test: v => /^[6-9]\d{9}$/.test(v.replace(/\s|\+91/g,'')) },
+      { id: 'email',      err: 'err-email',        test: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) },
+      { id: 'aadhaar_no', err: 'err-aadhaar_no',  test: v => /^\d{12}$/.test(v) },
+      { id: 'state',      err: 'err-state',        test: v => !!v },
+    ];
+    return runChecks(checks);
+  }
+
+  if (step === 3) {
+    const checks = [
+      { id: 'college_name',   err: 'err-college_name',   test: v => v.trim().length >= 3 },
+      { id: 'course',         err: 'err-course',          test: v => v.trim().length >= 2 },
+      { id: 'academic_year',  err: 'err-academic_year',   test: v => !!v },
+      { id: 'percentage',     err: 'err-percentage',      test: v => v !== '' && +v >= 0 && +v <= 100 },
+      { id: 'family_income',  err: 'err-family_income',   test: v => v !== '' && +v >= 0 },
+      { id: 'bank_name',      err: 'err-bank_name',       test: v => v.trim().length >= 2 },
+      { id: 'bank_account',   err: 'err-bank_account',    test: v => v.trim().length >= 6 },
+      { id: 'ifsc_code',      err: 'err-ifsc_code',       test: v => /^[A-Z]{4}0[A-Z0-9]{6}$/.test(v) },
+    ];
+    return runChecks(checks);
+  }
+
+  return true;
+}
+
+function runChecks(checks) {
+  let ok = true;
+  checks.forEach(({ id, err, test }) => {
+    const el  = document.getElementById(id);
+    const val = el.value;
+    const pass = test(val);
+    el.classList.toggle('err', !pass);
+    document.getElementById(err).classList.toggle('show', !pass);
+    if (!pass) ok = false;
+  });
+  return ok;
+}
+
+// ── Build review ──────────────────────────────────────────────
+function buildReview() {
+  const icons = { international:'🌐', national:'🇮🇳', state:'🏛️', private:'🏢' };
+  document.getElementById('review-sch-icon').textContent  = icons[selectedSch.type] || '🎓';
+  document.getElementById('review-sch-title').textContent = selectedSch.title;
+  document.getElementById('review-sch-meta').textContent  = `${selectedSch.provider} · ${selectedSch.level || 'All Levels'}`;
+  document.getElementById('review-sch-amount').textContent = `💰 ${selectedSch.amount || 'See details'}`;
+  document.getElementById('review-sch-type').textContent  = selectedSch.type.charAt(0).toUpperCase() + selectedSch.type.slice(1);
+
+  const g = id => document.getElementById(id)?.value || '—';
+  document.getElementById('rv-full_name').textContent = g('full_name');
+  document.getElementById('rv-dob').textContent       = g('dob');
+  document.getElementById('rv-gender').textContent    = g('gender');
+  document.getElementById('rv-category').textContent  = g('category');
+  document.getElementById('rv-mobile').textContent    = g('mobile');
+  document.getElementById('rv-email').textContent     = g('email');
+  document.getElementById('rv-aadhaar').textContent   = g('aadhaar_no').replace(/(\d{4})/g,'$1 ').trim();
+  document.getElementById('rv-state').textContent     = g('state');
+  document.getElementById('rv-college').textContent   = g('college_name');
+  document.getElementById('rv-course').textContent    = g('course');
+  document.getElementById('rv-year').textContent      = g('academic_year');
+  document.getElementById('rv-percent').textContent   = g('percentage') + '%';
+  document.getElementById('rv-income').textContent    = '₹' + Number(g('family_income')).toLocaleString('en-IN');
+  document.getElementById('rv-bank').textContent      = g('bank_name');
+  document.getElementById('rv-acct').textContent      = g('bank_account');
+  document.getElementById('rv-ifsc').textContent      = g('ifsc_code');
+}
+
+// ── Submit ────────────────────────────────────────────────────
+async function submitApplication() {
+  if (!document.getElementById('declaration-check').checked) {
+    showToast('Please read and accept the declaration to submit.', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  const payload = {
+    scholarship_id: selectedSch.id,
+    app_type:       appType,
+    full_name:      document.getElementById('full_name').value.trim(),
+    email:          document.getElementById('email').value.trim(),
+    mobile:         document.getElementById('mobile').value.trim(),
+    aadhaar_no:     document.getElementById('aadhaar_no').value.trim(),
+    dob:            document.getElementById('dob').value,
+    gender:         document.getElementById('gender').value,
+    category:       document.getElementById('category').value,
+    state:          document.getElementById('state').value,
+    college_name:   document.getElementById('college_name').value.trim(),
+    course:         document.getElementById('course').value.trim(),
+    academic_year:  document.getElementById('academic_year').value,
+    percentage:     parseFloat(document.getElementById('percentage').value),
+    family_income:  parseFloat(document.getElementById('family_income').value),
+    bank_name:      document.getElementById('bank_name').value.trim(),
+    bank_account:   document.getElementById('bank_account').value.trim(),
+    ifsc_code:      document.getElementById('ifsc_code').value.trim(),
+  };
+
+  const data = await apiFetch('/applications', { method: 'POST', body: JSON.stringify(payload) });
+
+  if (data.success) {
+    // Hide form, show success
+    document.querySelectorAll('.step-panel').forEach(p => p.style.display = 'none');
+    document.querySelector('.step-bar').style.display = 'none';
+    document.querySelector('.progress-track').style.display = 'none';
+    document.getElementById('success-app-id').textContent = data.app_id;
+    document.getElementById('success-screen').classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    showToast(data.message || 'Submission failed. Please try again.', 'error');
+    btn.disabled = false;
+    btn.textContent = 'Submit Application ✓';
+  }
+}
+</script>
+</body>
+</html>

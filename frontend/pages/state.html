@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>State Scholarships — Scholarship Hub</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<div class="top-bar">
+  <span>Government of India &nbsp;|&nbsp; Ministry of Electronics &amp; Information Technology</span>
+  <div class="flag">
+    <div class="flag-stripe" style="background:#ff8c00"></div>
+    <div class="flag-stripe" style="background:#ffffff"></div>
+    <div class="flag-stripe" style="background:#138808"></div>
+    <span style="margin-left:6px">Digital India</span>
+  </div>
+</div>
+<nav>
+  <div class="logo"><div class="logo-icon">🎓</div><div class="logo-text"><h1>Scholarship Hub</h1><p>NATIONAL SCHOLARSHIP PORTAL</p></div></div>
+  <div class="nav-links">
+    <div class="nav-item"><a href="../index.html">Home</a></div>
+    <div class="nav-item">
+      <span>Scholarships <span class="caret">▾</span></span>
+      <div class="dropdown">
+        <a href="international.html">🌐 International</a><a href="national.html">🇮🇳 National</a>
+        <a href="state.html">🏛️ State</a><a href="private.html">🏢 Private</a>
+      </div>
+    </div>
+    <div class="nav-item"><a href="../index.html#tracker">Track Application</a></div>
+    <div class="nav-item"><a href="../index.html#announcements">Announcements</a></div>
+    <div class="nav-item">
+      <span>Help <span class="caret">▾</span></span>
+      <div class="dropdown"><a href="faq.html">❓ FAQs</a><a href="contact.html">📞 Contact Us</a></div>
+    </div>
+  </div>
+  <div style="display:flex;gap:12px;align-items:center">
+    <div class="nav-search"><span class="nav-search-icon">🔍</span><input type="text" placeholder="Search scholarships..."></div>
+    <a href="#" class="btn-apply">Apply Now</a>
+  </div>
+</nav>
+
+<div class="page-hero page-hero-blue">
+  <div class="page-hero-content">
+    <div class="breadcrumb"><a href="../index.html">Home</a> › Scholarships › State</div>
+    <h2>State Sector Scholarships</h2>
+    <p>State government scholarships for local students covering education from Class 1 through postgraduate levels.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><span class="h-num">200+</span><span class="h-label">State Programs</span></div>
+      <div class="hero-stat"><span class="h-num">28</span><span class="h-label">States Covered</span></div>
+      <div class="hero-stat"><span class="h-num">₹50,000</span><span class="h-label">Max Award/yr</span></div>
+    </div>
+  </div>
+  <div class="page-hero-icon">🏛️</div>
+</div>
+
+<div class="filter-bar">
+  <div class="filter-group">
+    <label>Category</label>
+    <select id="f-category">
+      <option value="">All Categories</option>
+      <option value="SC">SC (Scheduled Caste)</option>
+      <option value="ST">ST (Scheduled Tribe)</option>
+      <option value="OBC">OBC</option>
+      <option value="Minority">Minority</option>
+      <option value="General">General / Open</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <label>Level</label>
+    <select id="f-level">
+      <option value="">All Levels</option>
+      <option value="Pre-Matric">Pre-Matric</option>
+      <option value="Post-Matric">Post-Matric</option>
+      <option value="Undergraduate">Undergraduate</option>
+      <option value="Postgraduate">Postgraduate</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <label>Status</label>
+    <select id="f-status">
+      <option value="">All</option>
+      <option value="open">Open</option>
+      <option value="upcoming">Upcoming</option>
+      <option value="closing_soon">Closing Soon</option>
+    </select>
+  </div>
+  <button class="btn-filter" onclick="applyFilters()">Apply Filters</button>
+  <button class="btn-card-outline" onclick="resetFilters()" style="align-self:flex-end;padding:10px 18px;white-space:nowrap">Reset</button>
+</div>
+  <div class="filter-group"><label>Category</label><select><option>All</option><option>SC</option><option>ST</option><option>OBC</option><option>Minority</option></select></div>
+  <div class="filter-group"><label>Status</label><select><option>All</option><option value="open">Open</option></select></div>
+  <button class="btn-filter" onclick="loadScholarships('state','#listings-grid')">Apply Filters</button>
+</div>
+
+<section class="listings-section">
+  <div class="listings-header"><h3>Loading...</h3><select class="sort-select"><option>Sort by: Most Relevant</option></select></div>
+  <div class="listings-grid" id="listings-grid"><div class="loading">Loading scholarships...</div></div>
+  <div style="text-align:center;margin-top:40px"><button class="btn-load-more" id="load-more-btn" onclick="loadMore()">Load More Scholarships</button></div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div><div class="footer-logo"><div class="icon">🎓</div><span>Scholarship Hub</span></div><p class="footer-desc">Comprehensive scholarship information. A Government of India initiative.</p></div>
+    <div class="footer-col"><h4>Scholarships</h4><a href="international.html">International</a><a href="national.html">National</a><a href="state.html">State</a><a href="private.html">Private</a></div>
+    <div class="footer-col"><h4>Help</h4><a href="faq.html">FAQs</a><a href="contact.html">Contact Us</a></div>
+    <div class="footer-col"><h4>Contact</h4><a href="mailto:info@scholarshipportal.com">info@scholarshipportal.com</a></div>
+  </div>
+  <div class="footer-bottom"><span>© 2025 Scholarship Hub.</span><span>Privacy Policy &nbsp;·&nbsp; Terms of Use</span></div>
+</footer>
+
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/script.js"></script>
+<script>
+  let _page = 1;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadScholarships('state', '#listings-grid');
+    updateNavForUser();
+    initSearch();
+  });
+
+  function applyFilters() {
+    _page = 1;
+    const cat    = document.getElementById('f-category')?.value || '';
+    const level  = document.getElementById('f-level')?.value    || '';
+    const status = document.getElementById('f-status')?.value   || '';
+    let path = `/scholarships?type=state&limit=20`;
+    if (cat)    path += `&category=${encodeURIComponent(cat)}`;
+    if (level)  path += `&level=${encodeURIComponent(level)}`;
+    if (status) path += `&status=${status}`;
+    const grid = document.getElementById('listings-grid');
+    const hdr  = document.querySelector('.listings-header h3');
+    grid.innerHTML = '<div class="loading">Filtering...</div>';
+    apiFetch(path).then(data => {
+      if (!data.success || !data.scholarships || !data.scholarships.length) {
+        grid.innerHTML = '<div style="text-align:center;padding:60px;color:var(--text-light)"><div style="font-size:40px;margin-bottom:12px">&#128270;</div><h3 style="font-size:17px;color:var(--text-dark)">No matching scholarships</h3><p style="margin-top:8px">Try different filter options or click Reset.</p></div>';
+        if (hdr) hdr.textContent = '0 results';
+        return;
+      }
+      if (hdr) hdr.textContent = `Showing ${data.scholarships.length} of ${data.total} Scholarships`;
+      grid.innerHTML = data.scholarships.map(s => _scholarshipCard(s)).join('');
+    });
+  }
+
+  function resetFilters() {
+    document.querySelectorAll('.filter-bar select').forEach(s => s.value = '');
+    _page = 1;
+    loadScholarships('state', '#listings-grid');
+  }
+
+  async function loadMore() {
+    _page++;
+    const btn    = document.getElementById('load-more-btn');
+    const cat    = document.getElementById('f-category')?.value || '';
+    const level  = document.getElementById('f-level')?.value    || '';
+    const status = document.getElementById('f-status')?.value   || '';
+    let path = `/scholarships?type=state&page=${_page}&limit=10`;
+    if (cat)    path += `&category=${encodeURIComponent(cat)}`;
+    if (level)  path += `&level=${encodeURIComponent(level)}`;
+    if (status) path += `&status=${status}`;
+    if (btn) { btn.textContent = 'Loading...'; btn.disabled = true; }
+    const data = await apiFetch(path);
+    if (data.success && data.scholarships && data.scholarships.length) {
+      const grid = document.getElementById('listings-grid');
+      grid.innerHTML += data.scholarships.map(s => _scholarshipCard(s)).join('');
+      const hdr = document.querySelector('.listings-header h3');
+      if (hdr) hdr.textContent = `Showing ${grid.children.length} of ${data.total} Scholarships`;
+      if (btn) {
+        btn.disabled = _page >= data.totalPages;
+        btn.textContent = _page >= data.totalPages ? 'No more results' : 'Load More';
+      }
+    } else {
+      if (btn) { btn.textContent = 'No more results'; btn.disabled = true; }
+    }
+  }
+</script>
+</body>
+</html>
