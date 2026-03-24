@@ -11,6 +11,17 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+// ── HTML escape helper ────────────────────────────────────────
+function esc(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+
 // ── Reusable HTML email wrapper ───────────────────────────────
 function emailWrapper(body) {
   return `
@@ -35,16 +46,16 @@ async function sendContactConfirmation({ to, name, queryType, message, appRef })
     to,
     subject: 'We received your message — Scholarship Hub',
     html: emailWrapper(`
-      <p style="font-size:16px;color:#1a2e22">Dear <strong>${name}</strong>,</p>
+      <p style="font-size:16px;color:#1a2e22">Dear <strong>${esc(name)}</strong>,</p>
       <p style="color:#3a5a47;line-height:1.7">
         Thank you for contacting us. We received your message about
-        <strong>"${queryType}"</strong> and will reply within <strong>2 working days</strong>.
+        <strong>"${esc(queryType)}"</strong> and will reply within <strong>2 working days</strong>.
       </p>
       <div style="background:white;border:1px solid #d0e8da;border-radius:8px;padding:16px;margin:20px 0">
         <p style="margin:0;font-size:12px;color:#6a8e78;text-transform:uppercase">Your Message</p>
-        <p style="margin:8px 0 0;color:#1a2e22">${message}</p>
+        <p style="margin:8px 0 0;color:#1a2e22">${esc(message)}</p>
       </div>
-      ${appRef ? `<p style="color:#3a5a47">Reference ID: <strong>${appRef}</strong></p>` : ''}
+      ${appRef ? `<p style="color:#3a5a47">Reference ID: <strong>${esc(appRef)}</strong></p>` : ''}
     `)
   });
 }
@@ -54,21 +65,21 @@ async function notifyAdmin({ name, email, mobile, queryType, message, appRef }) 
   await transporter.sendMail({
     from:    process.env.EMAIL_FROM,
     to:      process.env.ADMIN_EMAIL,
-    subject: `📬 New Contact: ${queryType} — ${name}`,
-    html: emailWrapper(`
-      <h3 style="color:#1a2e22">New Contact Message</h3>
-      <table style="width:100%;font-size:14px;border-collapse:collapse">
-        <tr><td style="padding:6px 0;color:#6a8e78;width:130px">Name</td><td style="color:#1a2e22"><strong>${name}</strong></td></tr>
-        <tr><td style="padding:6px 0;color:#6a8e78">Email</td><td style="color:#1a5a9a">${email}</td></tr>
-        <tr><td style="padding:6px 0;color:#6a8e78">Mobile</td><td style="color:#1a2e22">${mobile || 'Not provided'}</td></tr>
-        <tr><td style="padding:6px 0;color:#6a8e78">App Ref</td><td style="color:#1a2e22">${appRef || 'Not provided'}</td></tr>
-        <tr><td style="padding:6px 0;color:#6a8e78">Query Type</td><td style="color:#1a2e22">${queryType}</td></tr>
-      </table>
-      <div style="background:white;border:1px solid #d0e8da;border-radius:8px;padding:16px;margin:20px 0">
-        <p style="margin:0;font-size:12px;color:#6a8e78;text-transform:uppercase">Message</p>
-        <p style="margin:8px 0 0;color:#1a2e22">${message}</p>
-      </div>
-    `)
+    subject: '📬 New Contact: ' + esc(queryType) + ' - ' + esc(name),
+    html: emailWrapper(
+      '<h3 style="color:#1a2e22">New Contact Message</h3>' +
+      '<table style="width:100%;font-size:14px;border-collapse:collapse">' +
+        '<tr><td style="padding:6px 0;color:#6a8e78;width:130px">Name</td><td style="color:#1a2e22"><strong>' + esc(name) + '</strong></td></tr>' +
+        '<tr><td style="padding:6px 0;color:#6a8e78">Email</td><td style="color:#1a5a9a">' + esc(email) + '</td></tr>' +
+        '<tr><td style="padding:6px 0;color:#6a8e78">Mobile</td><td style="color:#1a2e22">' + (esc(mobile) || 'Not provided') + '</td></tr>' +
+        '<tr><td style="padding:6px 0;color:#6a8e78">App Ref</td><td style="color:#1a2e22">' + (esc(appRef) || 'Not provided') + '</td></tr>' +
+        '<tr><td style="padding:6px 0;color:#6a8e78">Query Type</td><td style="color:#1a2e22">' + esc(queryType) + '</td></tr>' +
+      '</table>' +
+      '<div style="background:white;border:1px solid #d0e8da;border-radius:8px;padding:16px;margin:20px 0">' +
+        '<p style="margin:0;font-size:12px;color:#6a8e78;text-transform:uppercase">Message</p>' +
+        '<p style="margin:8px 0 0;color:#1a2e22">' + esc(message) + '</p>' +
+      '</div>'
+    )
   });
 }
 

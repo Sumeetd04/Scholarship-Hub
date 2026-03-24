@@ -1,13 +1,15 @@
+const crypto = require('crypto');
+
 // ── ID Generators ─────────────────────────────────────────────
 function generateOTR() {
   const year = new Date().getFullYear();
-  const rand = Math.floor(100000 + Math.random() * 900000);
+  const rand = crypto.randomBytes(4).toString('hex').toUpperCase();
   return `OTR-${year}-${rand}`;
 }
 
 function generateAppId() {
   const year = new Date().getFullYear();
-  const rand = Math.floor(100000 + Math.random() * 900000);
+  const rand = crypto.randomBytes(4).toString('hex').toUpperCase();
   return `NSP-${year}-${rand}`;
 }
 
@@ -15,7 +17,8 @@ function generateAppId() {
 function formatDate(date) {
   if (!date) return null;
   return new Date(date).toLocaleDateString('en-IN', {
-    day: 'numeric', month: 'short', year: 'numeric'
+    day: 'numeric', month: 'short', year: 'numeric',
+    timeZone: 'Asia/Kolkata'
   });
 }
 

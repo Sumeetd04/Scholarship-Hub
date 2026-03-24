@@ -13,11 +13,11 @@ const API_BASE = (() => {
 
 // ── Auth helpers ──────────────────────────────────────────────
 const Auth = {
-  save:      (token, user) => { sessionStorage.setItem('sh_token', token); sessionStorage.setItem('sh_user', JSON.stringify(user)); },
-  token:     ()            => sessionStorage.getItem('sh_token'),
-  user:      ()            => JSON.parse(sessionStorage.getItem('sh_user') || 'null'),
-  logout:    ()            => { sessionStorage.removeItem('sh_token'); sessionStorage.removeItem('sh_user'); window.location.href = _root() + 'pages/login.html'; },
-  isLoggedIn:()            => !!sessionStorage.getItem('sh_token'),
+  save:      (token, user) => { localStorage.setItem('sh_token', token); localStorage.setItem('sh_user', JSON.stringify(user)); },
+  token:     ()            => localStorage.getItem('sh_token'),
+  user:      ()            => JSON.parse(localStorage.getItem('sh_user') || 'null'),
+  logout:    ()            => { localStorage.removeItem('sh_token'); localStorage.removeItem('sh_user'); window.location.href = _root() + 'pages/login.html'; },
+  isLoggedIn:()            => !!localStorage.getItem('sh_token'),
   isAdmin:   ()            => { const u = Auth.user(); return u && u.role === 'admin'; }
 };
 

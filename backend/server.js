@@ -10,6 +10,13 @@ const authLimiter = rateLimit({
   message: { success: false, message: 'Too many attempts. Try again in 15 minutes.' },
   standardHeaders: true, legacyHeaders: false
 });
+
+const contactLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000, max: 5,
+  message: { success: false, message: 'Too many messages sent. Please wait 10 minutes before trying again.' },
+  standardHeaders: true, legacyHeaders: false
+});
+
 const generalLimiter = rateLimit({ windowMs: 60 * 1000, max: 120 });
 
 // Accept all localhost ports + deployed URL
@@ -18,7 +25,7 @@ app.use(cors({
     if (!origin) return cb(null, true);
     if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) return cb(null, true);
     if (origin === process.env.FRONTEND_URL) return cb(null, true);
-    cb(null, true); // open in dev — lock down in production
+    cb(new Error('CORS: origin not allowed'));
   },
   methods: ['GET','POST','PUT','DELETE','OPTIONS'],
   allowedHeaders: ['Content-Type','Authorization'],
@@ -33,7 +40,7 @@ app.use('/api/auth',          authLimiter, require('./routes/auth'));
 app.use('/api/scholarships',  require('./routes/scholarships'));
 app.use('/api/applications',  require('./routes/applications'));
 app.use('/api/announcements', require('./routes/announcements'));
-app.use('/api/contact',       require('./routes/contact'));
+app.use('/api/contact',       contactLimiter, require('./routes/contact'));
 app.use('/api/admin',         require('./routes/admin'));
 
 app.get('/', (req, res) => res.json({ status: 'running', message: 'Scholarship Hub API v1.0' }));

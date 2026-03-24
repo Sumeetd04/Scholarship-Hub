@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS applications (
   id                INT AUTO_INCREMENT PRIMARY KEY,
   app_id            VARCHAR(50)    NOT NULL UNIQUE,
   user_id           INT            NOT NULL,
-  scholarship_id    INT            NOT NULL,
+  scholarship_id    INT ,
   full_name         VARCHAR(150)   NOT NULL,
   email             VARCHAR(150)   NOT NULL,
   mobile            VARCHAR(15),
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS applications (
   created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id)        REFERENCES users(id)        ON DELETE CASCADE,
-  FOREIGN KEY (scholarship_id) REFERENCES scholarships(id) ON DELETE CASCADE
+  FOREIGN KEY (scholarship_id) REFERENCES scholarships(id) ON DELETE SET NULL
 );
 
 -- ── ANNOUNCEMENTS ────────────────────────────────────────────

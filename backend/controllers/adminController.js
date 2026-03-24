@@ -50,23 +50,49 @@ exports.createScholarship = async (req, res) => {
 exports.updateScholarship = async (req, res) => {
   const { title, type, provider, country, level, field, category, amount,
           description, eligibility, deadline, apply_link, status } = req.body;
+
+  if (!title || !type || !provider) {
+    return res.status(400).json({ success: false, message: 'title, type and provider are required.' });
+  }
+
   try {
-    await db.query(
+    const [result] = await db.query(
       `UPDATE scholarships SET title=?,type=?,provider=?,country=?,level=?,field=?,
         category=?,amount=?,description=?,eligibility=?,deadline=?,apply_link=?,status=?
        WHERE id=?`,
       [title, type, provider, country, level, field, category, amount,
        description, eligibility, deadline, apply_link, status, req.params.id]
     );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: 'Scholarship not found.' });
+    }
+
     res.json({ success: true, message: 'Scholarship updated!' });
-  } catch (err) { res.status(500).json({ success: false, message: 'Server error.' }); }
+  } catch (err) {
+    console.error('updateScholarship:', err);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
 };
 
 exports.deleteScholarship = async (req, res) => {
   try {
+    const [apps] = await db.query(
+      'SELECT COUNT(*) AS total FROM applications WHERE scholarship_id = ? AND status NOT IN ("rejected","complete")',
+      [req.params.id]
+    );
+    if (apps[0].total > 0) {
+      return res.status(400).json({
+        success: false,
+        message: `Cannot delete — this scholarship has ${apps[0].total} active application(s). Close or reject them first.`
+      });
+    }
     await db.query('DELETE FROM scholarships WHERE id=?', [req.params.id]);
     res.json({ success: true, message: 'Scholarship deleted.' });
-  } catch (err) { res.status(500).json({ success: false, message: 'Server error.' }); }
+  } catch (err) {
+    console.error('deleteScholarship:', err);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
 };
 
 // ── Applications ──────────────────────────────────────────────

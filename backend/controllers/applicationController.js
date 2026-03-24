@@ -55,9 +55,9 @@ exports.getMine = async (req, res) => {
 exports.track = async (req, res) => {
   try {
     const [rows] = await db.query(
-      `SELECT a.app_id, a.full_name, a.status, a.app_type, a.academic_year,
+      `SELECT a.app_id, a.status, a.app_type, a.academic_year,
               a.amount_sanctioned, a.created_at, a.updated_at, a.disbursed_at,
-              a.rejection_reason, a.college_name, a.course,
+              a.rejection_reason, a.course,
               s.title AS scholarship_title, s.type AS scholarship_type, s.amount
        FROM applications a JOIN scholarships s ON a.scholarship_id = s.id
        WHERE a.app_id = ?`,
@@ -66,7 +66,10 @@ exports.track = async (req, res) => {
     if (!rows.length) {
       return res.status(404).json({ success: false, message: 'Application not found. Please check your ID.' });
     }
-    res.json({ success: true, application: rows[0] });
+
+    const app = rows[0];
+
+    res.json({ success: true, application: app });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Server error.' });
   }
