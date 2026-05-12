@@ -125,6 +125,9 @@ Make sure FRONTEND_URL in .env matches your Live Server port.
 | POST   | /api/admin/announcements          | Admin    | Create announcement      |
 | PUT    | /api/admin/announcements/:id      | Admin    | Update announcement      |
 | DELETE | /api/admin/announcements/:id      | Admin    | Delete announcement      |
+
+| GET    | /api/admin/messages               | Admin    | Contact messages         |
+
 | GET    | /api/admin/messages               | Admin    | Contact messages         |
 
 
@@ -137,3 +140,4 @@ Make sure FRONTEND_URL in .env matches your Live Server port.
 
 
 hello
+
