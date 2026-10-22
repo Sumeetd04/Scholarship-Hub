@@ -1,0 +1,41 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Messages · Admin{% endblock %}
+
+{% block admin %}
+<div class="admin-header">
+  <div>
+    <span class="eyebrow"><svg class="ico"><use href="#i-mail"></use></svg> Support inbox</span>
+    <h1 style="margin-top:6px;">Student messages</h1>
+    <p>{{ new_count }} new · {{ messages | length }} total</p>
+  </div>
+</div>
+
+<div class="stack" style="gap:12px;">
+  {% for m in messages %}
+    <div class="glass msg-card">
+      <div class="msg-head">
+        <div>
+          <h4>{{ m.subject or 'General query' }}</h4>
+          <div class="msg-meta" style="margin-top:6px;">
+            <span>{{ m.name }}</span>
+            <a href="mailto:{{ m.email }}" style="color:var(--primary);">{{ m.email }}</a>
+            <span>{{ m.created_at | date_human }}</span>
+          </div>
+        </div>
+        <div class="row" style="gap:8px;">
+          <span class="pill {{ 'pill-warning' if m.status == 'new' else 'pill-success' }}">{{ m.status }}</span>
+          {% if m.status == 'new' %}
+            <form method="post" action="/admin/messages/{{ m.id }}/resolve">
+              <button class="btn btn-ghost btn-sm" type="submit"><svg class="ico"><use href="#i-check"></use></svg> Resolve</button>
+            </form>
+          {% endif %}
+          <a class="mini-btn" href="mailto:{{ m.email }}?subject=Re: {{ m.subject or 'Scholarship Hub query' }}" title="Reply by email"><svg class="ico"><use href="#i-send"></use></svg></a>
+        </div>
+      </div>
+      <p style="margin:0;">{{ m.message }}</p>
+    </div>
+  {% else %}
+    <div class="glass empty"><svg class="ico"><use href="#i-mail"></use></svg><h3>Inbox zero</h3><p>No student messages yet.</p></div>
+  {% endfor %}
+</div>
+{% endblock %}

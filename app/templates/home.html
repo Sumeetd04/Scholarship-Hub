@@ -1,0 +1,321 @@
+{% extends "base.html" %}
+{% block title %}Scholarship Hub · Every scholarship in India, tracked{% endblock %}
+{% block description %}Discover central, state, private and foundation scholarships open to Indian students and track every application from submission to disbursal on one glassy dashboard.{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="hero-badge">
+        <span class="dot"></span>
+        2026-27 cycle · {{ stats.closing }} schemes closing in the next 30 days
+      </span>
+      <h1>Every scholarship in India.<br><span class="gradient-text">One glass pane.</span></h1>
+      <p class="hero-sub">
+        Search {{ stats.total }} verified central, state, private and foundation scholarships —
+        then track each application from submission to disbursal with a single submission ID.
+      </p>
+
+      <form class="search-panel" action="/scholarships" method="get" data-search role="search">
+        <svg class="ico ico-search"><use href="#i-search"></use></svg>
+        <label for="heroSearch" class="sr-only">Search scholarships</label>
+        <input id="heroSearch" type="search" name="q" placeholder="Try “girls engineering”, “SC Maharashtra”, “₹50,000”…" autocomplete="off">
+        <label for="heroCat" class="sr-only">Category</label>
+        <select id="heroCat" name="category">
+          <option value="">All categories</option>
+          {% for c in CATEGORIES %}<option value="{{ c.name }}">{{ c.name }}</option>{% endfor %}
+        </select>
+        <button class="btn btn-primary" type="submit">Search</button>
+        <div class="suggest-panel glass" aria-live="polite"></div>
+      </form>
+
+      <div class="search-hints">
+        <span>Popular:</span>
+        <a href="/scholarships?gender=Female">Girls only</a>
+        <a href="/scholarships?q=SC">SC / ST</a>
+        <a href="/scholarships?q=engineering">Engineering</a>
+        <a href="/scholarships?state=Maharashtra">Maharashtra</a>
+        <a href="/scholarships?category=Private+%26+Corporate">CSR</a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="glass hero-stat glass-sheen">
+          <strong>{{ stats.total }}</strong>
+          <span>Scholarships</span>
+        </div>
+        <div class="glass hero-stat glass-sheen">
+          <strong>{{ stats.states }}</strong>
+          <span>States covered</span>
+        </div>
+        <div class="glass hero-stat glass-sheen">
+          <strong>{{ stats.top_award | short_amount }}</strong>
+          <span>Largest award</span>
+        </div>
+        <div class="glass hero-stat glass-sheen">
+          <strong>{{ stats.tracked }}</strong>
+          <span>Applications tracked</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual reveal">
+      <div class="glass hero-card glass-sheen">
+        <div class="hero-card-inner">
+          <div class="mini-head">
+            <div>
+              <span class="eyebrow"><svg class="ico"><use href="#i-sparkles"></use></svg> Live tracking preview</span>
+              <h4 style="margin-top:6px;">Application timeline</h4>
+            </div>
+            <span class="pill pill-success">Approved</span>
+          </div>
+
+          <div class="glass" style="padding:16px; border-radius:16px; background: rgba(255,255,255,.045);">
+            <div class="between" style="margin-bottom:10px;">
+              <div>
+                <small class="muted tiny">Submission ID</small>
+                <div class="mono" style="font-size:.84rem; color: var(--ink-strong);">SH-2026-101043</div>
+              </div>
+              <span class="status-pill tone-info">Under review</span>
+            </div>
+            <div class="progress"><span data-value="55" style="width:55%"></span></div>
+            <div class="progress-meta"><span>Documents verified</span><span>55%</span></div>
+          </div>
+
+          <div class="timeline" style="margin-top:22px; padding-left:34px;">
+            <div class="tl-item is-done">
+              <span class="tl-dot"><svg class="ico"><use href="#i-send"></use></svg></span>
+              <h4 style="font-size:.85rem;">Application submitted</h4>
+              <div class="tl-time">12 Oct 2026 · 10:42 AM</div>
+            </div>
+            <div class="tl-item is-done">
+              <span class="tl-dot"><svg class="ico"><use href="#i-check"></use></svg></span>
+              <h4 style="font-size:.85rem;">Institute verification complete</h4>
+              <div class="tl-time">18 Oct 2026 · 04:15 PM</div>
+            </div>
+            <div class="tl-item is-current">
+              <span class="tl-dot"><svg class="ico"><use href="#i-clock"></use></svg></span>
+              <h4 style="font-size:.85rem;">Sanction committee review</h4>
+              <p class="tiny" style="margin-top:4px;">Expected decision by 05 Nov 2026</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="glass hero-float">
+        <svg class="ico"><use href="#i-wallet"></use></svg>
+        <div>
+          <strong>₹1,10,000 credited</strong>
+          <small>Direct benefit transfer · 2 days ago</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <div class="glass trust-strip">
+    <span><svg class="ico"><use href="#i-shield"></use></svg> No agents, no processing fees</span>
+    <span><svg class="ico"><use href="#i-lock"></use></svg> Aadhaar-safe, never stored</span>
+    <span><svg class="ico"><use href="#i-refresh"></use></svg> Status synced with scheme timelines</span>
+    <span><svg class="ico"><use href="#i-users"></use></svg> Built for Indian students only</span>
+  </div>
+</div>
+
+<!-- Tracker: the core feature ------------------------------------------------>
+<section class="section" id="track">
+  <div class="container">
+    <div class="glass track-panel glass-sheen">
+      <div class="between" style="align-items:flex-start; margin-bottom:22px;">
+        <div>
+          <span class="eyebrow"><svg class="ico"><use href="#i-search"></use></svg> The main event</span>
+          <h2 style="margin-top:8px;">Track any application in 10 seconds</h2>
+          <p style="margin-top:8px; max-width:62ch;">
+            Every scholarship applied through Scholarship Hub gets one submission ID. Use it with your
+            date of birth to see exactly where your file is — no phone calls, no portal-hopping.
+          </p>
+        </div>
+        <a href="/track" class="link-arrow">Open full tracker <svg class="ico"><use href="#i-arrow-right"></use></svg></a>
+      </div>
+
+      <form class="track-form" method="post" action="/track">
+        <div class="field">
+          <label for="homeAppNo">Submission ID</label>
+          <input id="homeAppNo" class="input mono" name="app_no" placeholder="SH-2026-101043" required>
+        </div>
+        <div class="field">
+          <label for="homeDob">Date of birth</label>
+          <input id="homeDob" class="input" type="date" name="dob" required>
+        </div>
+        <button class="btn btn-primary" type="submit">
+          <svg class="ico"><use href="#i-search"></use></svg> Track status
+        </button>
+      </form>
+      <div class="track-note">
+        <svg class="ico"><use href="#i-shield"></use></svg>
+        Your date of birth is used only to verify ownership and is never shown publicly.
+        {% if demo %}
+          <a href="/track/{{ demo.application_no }}?dob={{ demo.dob }}" style="color:var(--primary); font-weight:600; margin-left:4px;">Try a demo application →</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Closing soon ------------------------------------------------------------>
+<section class="section-tight">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow"><svg class="ico"><use href="#i-clock"></use></svg> Deadline radar</span>
+        <h2 style="margin-top:8px;">Closing soon</h2>
+        <p>Six high-demand schemes with the nearest cut-offs. Every date is the official 2026-27 cycle deadline.</p>
+      </div>
+      <a href="/scholarships?sort=deadline" class="link-arrow">Browse all {{ stats.total }} <svg class="ico"><use href="#i-arrow-right"></use></svg></a>
+    </div>
+    <div class="hscroll">
+      {% for s in featured %}
+        {% set score = none %}
+        {% include "partials/scholarship_card.html" %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Categories -------------------------------------------------------------->
+<section class="section-tight">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow"><svg class="ico"><use href="#i-grid"></use></svg> Catalogue</span>
+        <h2 style="margin-top:8px;">Four kinds of funding, one place</h2>
+      </div>
+      <a href="/scholarships" class="link-arrow">See the full catalogue <svg class="ico"><use href="#i-arrow-right"></use></svg></a>
+    </div>
+    <div class="cat-grid">
+      {% for c in categories %}
+        <a class="glass card-hover cat-card accent-{{ c.accent }}" href="/scholarships?category={{ c.name | urlencode }}">
+          <span class="cat-icon"><svg class="ico"><use href="#i-{{ c.icon }}"></use></svg></span>
+          <div>
+            <h3>{{ c.name }}</h3>
+            <p>{{ c.blurb }}</p>
+          </div>
+          <div class="cat-foot">
+            <span>{{ c.count }} schemes</span>
+            <svg class="ico" style="width:15px;height:15px;"><use href="#i-arrow-right"></use></svg>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- How tracking works ------------------------------------------------------>
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow"><svg class="ico"><use href="#i-trend-up"></use></svg> How it works</span>
+        <h2 style="margin-top:8px;">You apply once. We chase the file.</h2>
+        <p>One dashboard for every scheme — and a timeline that tells you who currently holds your application.</p>
+      </div>
+      <a href="/finder" class="btn btn-ghost">Find my eligible schemes <svg class="ico"><use href="#i-sparkles"></use></svg></a>
+    </div>
+    <div class="steps">
+      <div class="glass step reveal">
+        <svg class="ico"><use href="#i-search"></use></svg>
+        <span class="step-no">STEP 01</span>
+        <h3>Match with schemes</h3>
+        <p>Tell us your state, level and income. The finder ranks every open scholarship by how well it fits.</p>
+      </div>
+      <div class="glass step reveal">
+        <svg class="ico"><use href="#i-file"></use></svg>
+        <span class="step-no">STEP 02</span>
+        <h3>Apply in one flow</h3>
+        <p>Your profile fills the form. Attach documents once, reuse them across every scheme you qualify for.</p>
+      </div>
+      <div class="glass step reveal">
+        <svg class="ico"><use href="#i-send"></use></svg>
+        <span class="step-no">STEP 03</span>
+        <h3>Get one ID</h3>
+        <p>Each application receives a permanent submission ID — shareable, searchable and verifiable.</p>
+      </div>
+      <div class="glass step reveal">
+        <svg class="ico"><use href="#i-wallet"></use></svg>
+        <span class="step-no">STEP 04</span>
+        <h3>Watch it land</h3>
+        <p>Follow submission → verification → approval → DBT credit, with the next action always spelled out.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- States ------------------------------------------------------------------>
+<section class="section-tight">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow"><svg class="ico"><use href="#i-map"></use></svg> State directories</span>
+        <h2 style="margin-top:8px;">Your state has its own stack</h2>
+        <p>MahaDBT, ePASS, OASIS, e-Grantz, Digital Gujarat and more — grouped by the portal you actually apply on.</p>
+      </div>
+      <a href="/states" class="link-arrow">All states <svg class="ico"><use href="#i-arrow-right"></use></svg></a>
+    </div>
+    <div class="state-grid">
+      {% for st in states %}
+        <a class="state-tile" href="/scholarships?state={{ st.state | urlencode }}">
+          {{ st.state }} <b>{{ st.n }}</b>
+        </a>
+      {% endfor %}
+      <a class="state-tile" href="/states">
+        <span class="muted">+ more states</span>
+        <svg class="ico" style="width:14px;height:14px;"><use href="#i-arrow-right"></use></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Announcements ----------------------------------------------------------->
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow"><svg class="ico"><use href="#i-bell"></use></svg> Deadline updates</span>
+        <h2 style="margin-top:8px;">What changed this week</h2>
+      </div>
+      <a href="/announcements" class="link-arrow">All updates <svg class="ico"><use href="#i-arrow-right"></use></svg></a>
+    </div>
+    <div class="sch-grid">
+      {% for a in announcements %}
+        <article class="glass card-hover announce-card reveal">
+          <div class="row" style="gap:8px;">
+            <span class="pill {{ 'pill-amber' if a.tag == 'Deadline' else ('pill-aqua' if a.tag in ['Central','Maharashtra'] else 'pill-primary') }}">{{ a.tag }}</span>
+            {% if a.pinned %}<svg class="ico pin" style="width:14px;height:14px;"><use href="#i-star"></use></svg>{% endif %}
+          </div>
+          <h3>{{ a.title }}</h3>
+          <p>{{ a.body }}</p>
+          <div class="announce-meta">
+            <span>{{ a.created_at | relative }}</span>
+            {% if a.link %}<a class="link-arrow" style="font-size:.78rem; margin-left:auto;" href="{{ a.link }}" target="_blank" rel="noopener">Official portal <svg class="ico"><use href="#i-external"></use></svg></a>{% endif %}
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- CTA --------------------------------------------------------------------->
+<section class="section-tight" style="padding-bottom: 20px;">
+  <div class="container">
+    <div class="cta">
+      <div>
+        <span class="eyebrow"><svg class="ico"><use href="#i-graduation"></use></svg> Free forever for students</span>
+        <h2 style="margin-top:10px;">Your next scholarship is already in the catalogue.</h2>
+        <p>Create an account to save schemes, generate applications and keep every deadline on one warm, glassy dashboard.</p>
+      </div>
+      <div class="row" style="gap:12px;">
+        <a href="/register" class="btn btn-primary btn-lg">Create free account <svg class="ico"><use href="#i-arrow-right"></use></svg></a>
+        <a href="/finder" class="btn btn-ghost btn-lg">Check eligibility</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

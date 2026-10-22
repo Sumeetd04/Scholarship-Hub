@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}How scholarship tracking works · {{ APP_NAME }}{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <nav class="breadcrumb"><a href="/">Home</a><span class="sep">/</span><span>How it works</span></nav>
+    <span class="eyebrow"><svg class="ico"><use href="#i-trend-up"></use></svg> How tracking works</span>
+    <h1 style="margin-top:8px;">One submission ID. A file you can actually follow.</h1>
+    <p>Most scholarship portals stop caring after you hit submit. This one shows you the queue, the officer and the next action.</p>
+  </div>
+</section>
+
+<section class="section-tight" style="padding-top: 8px;">
+  <div class="container">
+    <div class="steps">
+      <div class="glass step"><span class="step-no">01</span><h3>Match</h3><p>Your state, income, category and level are compared with every open scheme. The finder returns a score and the reasons behind it.</p></div>
+      <div class="glass step"><span class="step-no">02</span><h3>Apply</h3><p>One prefilled form per scheme. Submitting locks your details and generates a submission ID in the format SH-YEAR-XXXXXX.</p></div>
+      <div class="glass step"><span class="step-no">03</span><h3>Track</h3><p>Every state change is appended to a timestamped timeline — institute verification, document checks, sanction committee.</p></div>
+      <div class="glass step"><span class="step-no">04</span><h3>Get paid</h3><p>When the amount is disbursed, the tracker shows the DBT credit and keeps the receipt available for your records.</p></div>
+    </div>
+
+    <div class="two-col mt-4">
+      <div class="glass card">
+        <h2 style="font-size:1.15rem; margin-bottom:16px;">The status ladder</h2>
+        <div class="bar-chart">
+          {% for key, meta in STATUS_META.items() %}
+            <div class="bar-row">
+              <span class="status-pill tone-{{ meta.tone }}" style="font-size:.7rem;">{{ meta.label }}</span>
+              <div class="bar-track"><div class="bar-fill" style="width: {{ meta.progress }}%;"></div></div>
+              <b>{{ meta.progress }}%</b>
+            </div>
+          {% endfor %}
+        </div>
+        <p class="tiny muted mt-3">Progress is indicative, not a guarantee. Real timelines depend on your institute and department.</p>
+      </div>
+
+      <div class="glass card">
+        <h2 style="font-size:1.15rem; margin-bottom:12px;">What you need ready</h2>
+        <ul class="bullet-list">
+          <li>Aadhaar-linked bank account in the student's name</li>
+          <li>Income certificate for the current financial year</li>
+          <li>Caste / domicile certificates where applicable</li>
+          <li>Last qualifying marksheet and institute bonafide</li>
+          <li>Fee receipt for fee-reimbursement schemes</li>
+        </ul>
+        <div class="divider"></div>
+        <a href="/track" class="btn btn-primary btn-block"><svg class="ico"><use href="#i-search"></use></svg> Track an application</a>
+        <a href="/scholarships" class="btn btn-ghost btn-block" style="margin-top:10px;">Browse the catalogue</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

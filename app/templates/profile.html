@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block title %}My profile · {{ APP_NAME }}{% endblock %}
+
+{% block content %}
+<section class="section-tight" style="padding-top: 32px;">
+  <div class="container">
+    <div class="dash-head">
+      <div>
+        <span class="eyebrow"><svg class="ico"><use href="#i-user"></use></svg> Account</span>
+        <h1 style="margin-top:6px;">My profile</h1>
+        <p>These details drive your eligibility matching and prefill every application.</p>
+      </div>
+      <a href="/dashboard" class="btn btn-ghost"><svg class="ico"><use href="#i-arrow-left"></use></svg> Back to dashboard</a>
+    </div>
+
+    {% if error %}<div class="form-error"><svg class="ico"><use href="#i-alert"></use></svg><span>{{ error }}</span></div>{% endif %}
+
+    <div class="two-col">
+      <div>
+        <form class="glass card" method="post" action="/profile">
+          <div class="form-section">
+            <h3><svg class="ico"><use href="#i-user"></use></svg> Personal details</h3>
+            <div class="form-grid">
+              <div class="field">
+                <label for="full_name">Full name</label>
+                <input id="full_name" class="input" name="full_name" value="{{ current_user['full_name'] }}" required>
+              </div>
+              <div class="field">
+                <label>Email <span class="muted">(fixed)</span></label>
+                <input class="input" value="{{ current_user['email'] }}" disabled>
+              </div>
+              <div class="field">
+                <label for="phone">Mobile number</label>
+                <input id="phone" class="input" name="phone" value="{{ current_user['phone'] or '' }}" placeholder="98765 43210">
+              </div>
+              <div class="field">
+                <label for="dob">Date of birth</label>
+                <input id="dob" class="input" type="date" name="dob" value="{{ current_user['dob'] or '' }}">
+              </div>
+              <div class="field">
+                <label for="gender">Gender</label>
+                <select id="gender" class="select" name="gender">
+                  <option value="">Prefer not to say</option>
+                  {% for g in GENDERS %}<option value="{{ g }}" {{ 'selected' if current_user['gender'] == g }}>{{ g }}</option>{% endfor %}
+                </select>
+              </div>
+              <div class="field">
+                <label for="category">Social category</label>
+                <select id="category" class="select" name="category">
+                  <option value="">Prefer not to say</option>
+                  {% for c in SOCIAL_CATEGORIES %}<option value="{{ c }}" {{ 'selected' if current_user['category'] == c }}>{{ c }}</option>{% endfor %}
+                </select>
+              </div>
+              <div class="field">
+                <label for="state">State of domicile</label>
+                <select id="state" class="select" name="state">
+                  <option value="">Select state</option>
+                  {% for st in STATES %}<option value="{{ st }}" {{ 'selected' if current_user['state'] == st }}>{{ st }}</option>{% endfor %}
+                </select>
+              </div>
+              <div class="field">
+                <label for="annual_income">Annual family income (₹)</label>
+                <input id="annual_income" class="input" type="number" min="0" step="10000" name="annual_income" value="{{ current_user['annual_income'] or 0 }}">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3><svg class="ico"><use href="#i-graduation"></use></svg> Education</h3>
+            <div class="form-grid">
+              <div class="field">
+                <label for="institute">Institute / school</label>
+                <input id="institute" class="input" name="institute" value="{{ current_user['institute'] or '' }}">
+              </div>
+              <div class="field">
+                <label for="course">Course / class</label>
+                <input id="course" class="input" name="course" value="{{ current_user['course'] or '' }}">
+              </div>
+              <div class="field">
+                <label for="level">Study level</label>
+                <select id="level" class="select" name="level">
+                  {% for lv in LEVELS %}<option value="{{ lv }}" {{ 'selected' if current_user['level'] == lv }}>{{ lv }}</option>{% endfor %}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-lg" type="submit"><svg class="ico"><use href="#i-check"></use></svg> Save changes</button>
+        </form>
+
+        <form class="glass card" method="post" action="/profile/password" style="margin-top:20px;">
+          <h3 style="font-size:1rem; display:flex; gap:8px; align-items:center; margin-bottom:16px;">
+            <svg class="ico" style="color:var(--primary);"><use href="#i-lock"></use></svg> Change password
+          </h3>
+          <div class="form-grid-3">
+            <div class="field">
+              <label for="current_password">Current password</label>
+              <input id="current_password" class="input" type="password" name="current_password" required autocomplete="current-password">
+            </div>
+            <div class="field">
+              <label for="new_password">New password</label>
+              <input id="new_password" class="input" type="password" name="new_password" required minlength="8" autocomplete="new-password">
+            </div>
+            <div class="field">
+              <label for="confirm_password">Confirm new password</label>
+              <input id="confirm_password" class="input" type="password" name="confirm_password" required minlength="8" autocomplete="new-password">
+            </div>
+          </div>
+          <button class="btn btn-ghost" type="submit">Update password</button>
+        </form>
+      </div>
+
+      <aside>
+        <div class="glass profile-card">
+          <div class="profile-top">
+            <span class="avatar avatar-xl">{{ current_user['full_name'] | initials }}</span>
+            <div>
+              <h3>{{ current_user['full_name'] }}</h3>
+              <p>{{ 'Administrator' if current_user['role'] == 'admin' else 'Student' }}</p>
+            </div>
+          </div>
+          <div class="kv"><span>OTR</span><strong class="mono" style="font-size:.74rem;">{{ current_user['otr'] or '—' }}</strong></div>
+          <div class="kv"><span>Member since</span><strong>{{ current_user['created_at'] | date_human }}</strong></div>
+          <div class="kv"><span>Role</span><strong style="text-transform:capitalize;">{{ current_user['role'] }}</strong></div>
+
+          <div class="completeness">
+            <div class="between" style="margin-bottom:6px;">
+              <span class="tiny muted">Profile completeness</span>
+              <strong class="tiny">{{ profile_pct }}%</strong>
+            </div>
+            <div class="progress"><span data-value="{{ profile_pct }}" style="width:{{ profile_pct }}%;"></span></div>
+          </div>
+
+          {% if missing %}
+            <p class="tiny muted">Still missing: {{ missing | join(', ') }}.</p>
+          {% else %}
+            <p class="tiny" style="color:var(--success);">All set — matching is fully tuned to your profile.</p>
+          {% endif %}
+        </div>
+
+        <div class="glass card card-tight" style="margin-top:16px;">
+          <div style="display:flex; gap:10px; align-items:flex-start;">
+            <svg class="ico" style="color:var(--aqua); width:18px; height:18px; flex:none; margin-top:2px;"><use href="#i-shield"></use></svg>
+            <p class="tiny muted" style="margin:0;">
+              We never ask for your Aadhaar number, bank password or OTP on Scholarship Hub.
+              Anyone who does is not us — report it.
+            </p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+{% endblock %}

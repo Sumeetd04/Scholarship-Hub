@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Saved scholarships · {{ APP_NAME }}{% endblock %}
+
+{% block content %}
+<section class="section-tight" style="padding-top: 32px;">
+  <div class="container">
+    <div class="dash-head">
+      <div>
+        <span class="eyebrow"><svg class="ico"><use href="#i-star"></use></svg> Watchlist</span>
+        <h1 style="margin-top:6px;">Saved scholarships</h1>
+        <p>{{ scholarships | length }} scheme{{ '' if scholarships | length == 1 else 's' }} on your radar. Deadlines update automatically.</p>
+      </div>
+      <a href="/scholarships" class="btn btn-primary"><svg class="ico"><use href="#i-search"></use></svg> Find more</a>
+    </div>
+
+    {% if scholarships %}
+      <div class="sch-grid">
+        {% for s in scholarships %}
+          {% include "partials/scholarship_card.html" %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="glass empty">
+        <svg class="ico"><use href="#i-star"></use></svg>
+        <h3>Nothing saved yet</h3>
+        <p>Tap the star on any scholarship to keep it here. We will keep an eye on the deadline for you.</p>
+        <a href="/scholarships" class="btn btn-primary">Browse the catalogue</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

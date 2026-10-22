@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Create your free account · {{ APP_NAME }}{% endblock %}
+
+{% block content %}
+<section class="section-tight">
+  <div class="container-md">
+    <div class="glass auth-wrap">
+      <aside class="auth-aside">
+        <div>
+          <span class="eyebrow"><svg class="ico"><use href="#i-graduation"></use></svg> Free for Indian students</span>
+          <h2 style="margin-top:12px;">Your entire scholarship year, in one account.</h2>
+          <p>Registering takes 30 seconds. No documents, no payment, no agents — just your state and study level.</p>
+          <ul class="auth-list">
+            <li><svg class="ico"><use href="#i-check-circle"></use></svg> A permanent OTR for all applications</li>
+            <li><svg class="ico"><use href="#i-check-circle"></use></svg> One submission ID per scheme, always traceable</li>
+            <li><svg class="ico"><use href="#i-check-circle"></use></svg> Deadline radar on your dashboard</li>
+            <li><svg class="ico"><use href="#i-check-circle"></use></svg> Eligibility-ranked recommendations</li>
+          </ul>
+        </div>
+        <div class="glass card-tight" style="margin-top:30px; padding:14px; border-radius:12px; background:rgba(255,255,255,.05);">
+          <p class="tiny" style="margin:0;">
+            <strong>Your data stays yours.</strong> We never share your profile with third parties, and
+            Aadhaar numbers are never collected on this portal.
+          </p>
+        </div>
+      </aside>
+
+      <div class="auth-form">
+        <h1>Create your account</h1>
+        <p class="sub">Already registered? <a href="/login" style="color:var(--primary); font-weight:600;">Sign in instead</a>.</p>
+
+        {% if error %}<div class="form-error" role="alert"><svg class="ico"><use href="#i-alert"></use></svg><span>{{ error }}</span></div>{% endif %}
+
+        <form method="post" action="/register">
+          <div class="field">
+            <label for="full_name">Full name (as on documents)</label>
+            <input id="full_name" class="input" name="full_name" value="{{ form.full_name or '' }}" required placeholder="Aarav Sharma">
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" class="input" type="email" name="email" value="{{ form.email or '' }}" required placeholder="you@example.com">
+            </div>
+            <div class="field">
+              <label for="phone">Mobile number</label>
+              <input id="phone" class="input" type="tel" name="phone" value="{{ form.phone or '' }}" placeholder="98765 43210">
+            </div>
+            <div class="field">
+              <label for="state">State of domicile</label>
+              <select id="state" class="select" name="state">
+                <option value="">Select state</option>
+                {% for st in states %}<option value="{{ st }}" {{ 'selected' if form.state == st }}>{{ st }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="field">
+              <label for="category">Social category</label>
+              <select id="category" class="select" name="category">
+                {% for c in categories %}<option value="{{ c }}" {{ 'selected' if form.category == c }}>{{ c }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="field">
+              <label for="level">Current study level</label>
+              <select id="level" class="select" name="level">
+                {% for lv in levels %}<option value="{{ lv }}" {{ 'selected' if form.level == lv }}>{{ lv }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="field">
+              <label for="annual_income">Annual family income (₹)</label>
+              <input id="annual_income" class="input" type="number" min="0" step="10000" name="annual_income" value="{{ form.annual_income or '' }}" placeholder="250000">
+            </div>
+            <div class="field">
+              <label for="password">Password</label>
+              <input id="password" class="input" type="password" name="password" required minlength="8" placeholder="At least 8 characters" autocomplete="new-password">
+            </div>
+            <div class="field">
+              <label for="confirm_password">Confirm password</label>
+              <input id="confirm_password" class="input" type="password" name="confirm_password" required minlength="8" placeholder="Repeat password" autocomplete="new-password">
+            </div>
+          </div>
+
+          <label class="check" style="margin:6px 0 18px;">
+            <input type="checkbox" name="consent" value="yes" required>
+            <span>I agree that my profile details are used to match me with scholarships and track my applications. I confirm I am a student in India.</span>
+          </label>
+
+          <button class="btn btn-primary btn-block btn-lg" type="submit">Create my free account <svg class="ico"><use href="#i-arrow-right"></use></svg></button>
+        </form>
+        <p class="auth-alt">By registering you accept our fair-use policy. Scholarship Hub never charges students.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

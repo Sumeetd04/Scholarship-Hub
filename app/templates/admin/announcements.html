@@ -1,0 +1,71 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Notices · Admin{% endblock %}
+
+{% block admin %}
+<div class="admin-header">
+  <div>
+    <span class="eyebrow"><svg class="ico"><use href="#i-bell"></use></svg> Communications</span>
+    <h1 style="margin-top:6px;">Notices &amp; updates</h1>
+    <p>{{ announcements | length }} notice{{ '' if announcements | length == 1 else 's' }} on the public board.</p>
+  </div>
+  <a href="/announcements" target="_blank" class="btn btn-ghost btn-sm"><svg class="ico"><use href="#i-external"></use></svg> View public board</a>
+</div>
+
+<div class="dash-grid">
+  <div>
+    {% for a in announcements %}
+      <div class="glass msg-card">
+        <div class="msg-head">
+          <div class="row" style="gap:8px;">
+            <span class="pill pill-soft">{{ a.tag }}</span>
+            {% if a.pinned %}<span class="pill pill-amber"><svg class="ico"><use href="#i-star"></use></svg> Pinned</span>{% endif %}
+            <span class="tiny muted">{{ a.created_at | date_human }}</span>
+          </div>
+          <div class="cell-actions">
+            <form method="post" action="/admin/announcements/{{ a.id }}/toggle">
+              <button class="mini-btn" type="submit" title="{{ 'Unpin' if a.pinned else 'Pin' }}"><svg class="ico"><use href="#i-star"></use></svg></button>
+            </form>
+            <form method="post" action="/admin/announcements/{{ a.id }}/delete" data-confirm="Delete this notice?">
+              <button class="mini-btn danger" type="submit" title="Delete"><svg class="ico"><use href="#i-trash"></use></svg></button>
+            </form>
+          </div>
+        </div>
+        <h4 style="margin-bottom:6px;">{{ a.title }}</h4>
+        <p style="margin:0;">{{ a.body }}</p>
+        {% if a.link %}<div class="msg-meta"><a href="{{ a.link }}" target="_blank" rel="noopener" style="color:var(--primary);">Official link</a></div>{% endif %}
+      </div>
+    {% else %}
+      <div class="glass empty"><svg class="ico"><use href="#i-bell"></use></svg><h3>No notices yet</h3><p>Publish the first deadline update using the form.</p></div>
+    {% endfor %}
+  </div>
+
+  <aside>
+    <form class="glass card" method="post" action="/admin/announcements">
+      <h3 style="font-size:1rem; margin-bottom:16px; display:flex; gap:8px; align-items:center;"><svg class="ico" style="color:var(--primary);"><use href="#i-plus"></use></svg> Publish a notice</h3>
+      <div class="field">
+        <label for="title">Title</label>
+        <input id="title" class="input" name="title" required placeholder="NSP 2026-27 window is open">
+      </div>
+      <div class="field">
+        <label for="body">Body</label>
+        <textarea id="body" class="textarea" name="body" required placeholder="What changed, who it affects, what to do next."></textarea>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label for="tag">Tag</label>
+          <select id="tag" class="select" name="tag">
+            <option>General</option><option>Deadline</option><option>Central</option>
+            <option>Maharashtra</option><option>State</option><option>Safety</option><option>Guidance</option><option>Product</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="link">Link (optional)</label>
+          <input id="link" class="input" type="url" name="link" placeholder="https://…">
+        </div>
+      </div>
+      <label class="check" style="margin-bottom:16px;"><input type="checkbox" name="pinned" value="1"> Pin to the top of the board</label>
+      <button class="btn btn-primary btn-block" type="submit"><svg class="ico"><use href="#i-send"></use></svg> Publish notice</button>
+    </form>
+  </aside>
+</div>
+{% endblock %}

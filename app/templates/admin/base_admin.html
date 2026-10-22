@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section-tight" style="padding-top: 28px;">
+  <div class="container">
+    <div class="admin-shell">
+      <aside class="glass admin-nav">
+        <span class="admin-label">Admin console</span>
+        <a href="/admin" class="{{ 'is-active' if admin_active == 'dashboard' }}"><svg class="ico"><use href="#i-grid"></use></svg> Overview</a>
+        <a href="/admin/scholarships" class="{{ 'is-active' if admin_active == 'scholarships' }}"><svg class="ico"><use href="#i-book"></use></svg> Scholarships</a>
+        <a href="/admin/applications" class="{{ 'is-active' if admin_active == 'applications' }}"><svg class="ico"><use href="#i-file"></use></svg> Applications</a>
+        <a href="/admin/students" class="{{ 'is-active' if admin_active == 'students' }}"><svg class="ico"><use href="#i-users"></use></svg> Students</a>
+        <div class="admin-sep"></div>
+        <a href="/admin/announcements" class="{{ 'is-active' if admin_active == 'announcements' }}"><svg class="ico"><use href="#i-bell"></use></svg> Notices</a>
+        <a href="/admin/messages" class="{{ 'is-active' if admin_active == 'messages' }}"><svg class="ico"><use href="#i-mail"></use></svg> Messages</a>
+        <div class="admin-sep"></div>
+        <a href="/" target="_blank"><svg class="ico"><use href="#i-external"></use></svg> View site</a>
+        <form method="post" action="/logout" style="margin-top:6px;">
+          <button type="submit" class="dropdown-danger" style="display:flex; align-items:center; gap:10px; width:100%; padding:10px 12px; border-radius:10px; font-size:.84rem; color:var(--danger);">
+            <svg class="ico"><use href="#i-logout"></use></svg> Sign out
+          </button>
+        </form>
+      </aside>
+      <div>
+        {% block admin %}{% endblock %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

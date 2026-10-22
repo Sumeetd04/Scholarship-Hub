@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}Find scholarships you qualify for · {{ APP_NAME }}{% endblock %}
+{% block description %}Answer six quick questions and get a ranked list of Indian scholarships matched to your state, study level, category and family income.{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <nav class="breadcrumb"><a href="/">Home</a><span class="sep">/</span><span>Eligibility finder</span></nav>
+    <span class="eyebrow"><svg class="ico"><use href="#i-sparkles"></use></svg> Eligibility finder</span>
+    <h1 style="margin-top:8px;">Stop reading 90 schemes. See the 6 you actually qualify for.</h1>
+    <p>The finder compares your profile with every open scheme — income ceilings, domicile rules, gender reservations and study levels included.</p>
+  </div>
+</section>
+
+<section class="section-tight" style="padding-top: 10px;">
+  <div class="container">
+    <div class="two-col">
+      <div>
+        <form class="glass card" method="get" action="/finder">
+          <div class="form-grid">
+            <div class="field">
+              <label for="fState">State of domicile</label>
+              <select id="fState" class="select" name="state">
+                <option value="">Any state</option>
+                {% for st in STATES %}<option value="{{ st }}" {{ 'selected' if profile.state == st }}>{{ st }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="field">
+              <label for="fLevel">Current study level</label>
+              <select id="fLevel" class="select" name="level">
+                <option value="">Any level</option>
+                {% for lv in LEVELS %}<option value="{{ lv }}" {{ 'selected' if profile.level == lv }}>{{ lv }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="field">
+              <label for="fCategory">Social category</label>
+              <select id="fCategory" class="select" name="category">
+                <option value="">Prefer not to say</option>
+                {% for c in SOCIAL_CATEGORIES %}<option value="{{ c }}" {{ 'selected' if profile.category == c }}>{{ c }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="field">
+              <label for="fGender">Gender</label>
+              <select id="fGender" class="select" name="gender">
+                <option value="">Any</option>
+                {% for g in GENDERS %}<option value="{{ g }}" {{ 'selected' if profile.gender == g }}>{{ g }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="field">
+              <label for="fIncome">Annual family income (₹)</label>
+              <input id="fIncome" class="input" type="number" min="0" step="10000" name="income" value="{{ profile.annual_income or '' }}" placeholder="e.g. 250000">
+              <span class="hint">Most schemes cap at ₹2.5 lakh or ₹8 lakh.</span>
+            </div>
+            <div class="field">
+              <label>Additional eligibility</label>
+              <label class="check" style="margin-bottom:8px;">
+                <input type="checkbox" name="disability" value="1" {{ 'checked' if profile.disability }}> I have a disability certificate
+              </label>
+              <label class="check">
+                <input type="checkbox" name="minority" value="1" {{ 'checked' if profile.minority }}> I belong to a minority community
+              </label>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-lg" type="submit">
+            <svg class="ico"><use href="#i-sparkles"></use></svg> Show my matches
+          </button>
+          <a href="/finder" class="btn btn-ghost btn-lg" style="margin-left:8px;">Reset</a>
+        </form>
+
+        {% if provided %}
+          <div class="section-head" style="margin-top:36px; margin-bottom:18px;">
+            <div>
+              <span class="eyebrow"><svg class="ico"><use href="#i-check-circle"></use></svg> Your results</span>
+              <h2 style="margin-top:8px;">{{ results | length }} strong match{{ '' if results | length == 1 else 'es' }}</h2>
+              <p>Ranked by fit with your profile. Every scheme below is open right now.</p>
+            </div>
+          </div>
+
+          {% if results %}
+            <div class="sch-grid sch-grid-2">
+              {% for s in results %}
+                {% include "partials/scholarship_card.html" %}
+              {% endfor %}
+            </div>
+            <div class="glass card mt-3" style="display:flex; gap:14px; align-items:flex-start;">
+              <svg class="ico" style="color:var(--aqua); width:20px; height:20px; flex:none; margin-top:2px;"><use href="#i-alert"></use></svg>
+              <p class="small" style="margin:0;">
+                The finder checks headline criteria only. Final eligibility is always decided by the
+                scheme's nodal officer — read the official notification before applying.
+              </p>
+            </div>
+          {% else %}
+            <div class="glass empty">
+              <svg class="ico"><use href="#i-search"></use></svg>
+              <h3>No strong matches with those answers</h3>
+              <p>Try widening your state to “Any state”, adjusting your income, or browsing the full catalogue — some schemes have softer criteria than their headline.</p>
+              <a href="/scholarships" class="btn btn-primary">Browse all schemes</a>
+            </div>
+          {% endif %}
+        {% endif %}
+      </div>
+
+      <aside>
+        <div class="glass card glass-sheen">
+          <span class="eyebrow"><svg class="ico"><use href="#i-shield"></use></svg> How scoring works</span>
+          <h3 style="margin:12px 0 14px; font-size:1.02rem;">Transparent, not magic</h3>
+          <ul class="bullet-list small">
+            <li>Domicile match with the scheme's state (or All-India schemes)</li>
+            <li>Income within the scheme's official ceiling</li>
+            <li>Study level match, including multi-level schemes</li>
+            <li>Gender, category, minority and disability reservations</li>
+            <li>Urgency — closing schemes are flagged, not boosted</li>
+          </ul>
+          <div class="divider"></div>
+          <div class="kv"><span>Open schemes checked</span><strong>{{ total_open }}</strong></div>
+          <div class="kv"><span>Minimum score</span><strong>40 / 100</strong></div>
+          <div class="kv"><span>Cost</span><strong style="color:var(--success);">Free</strong></div>
+          {% if current_user %}
+            <a href="/profile" class="btn btn-ghost btn-block mt-2"><svg class="ico"><use href="#i-user"></use></svg> Update my profile</a>
+          {% else %}
+            <a href="/register" class="btn btn-soft btn-block mt-2">Save my profile <svg class="ico"><use href="#i-arrow-right"></use></svg></a>
+          {% endif %}
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+{% endblock %}

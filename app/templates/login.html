@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Sign in · {{ APP_NAME }}{% endblock %}
+
+{% block content %}
+<section class="section-tight">
+  <div class="container-md">
+    <div class="glass auth-wrap">
+      <aside class="auth-aside">
+        <div>
+          <span class="eyebrow"><svg class="ico"><use href="#i-shield"></use></svg> Student &amp; admin access</span>
+          <h2 style="margin-top:12px;">Welcome back to your scholarship desk.</h2>
+          <p>One sign-in for every application, deadline and disbursal — across central, state and private schemes.</p>
+          <ul class="auth-list">
+            <li><svg class="ico"><use href="#i-check-circle"></use></svg> Live status timeline for every submission</li>
+            <li><svg class="ico"><use href="#i-check-circle"></use></svg> Saved schemes with deadline reminders</li>
+            <li><svg class="ico"><use href="#i-check-circle"></use></svg> Profile-matched recommendations</li>
+          </ul>
+        </div>
+        <div class="glass card-tight" style="margin-top:30px; padding:14px; border-radius:12px; background:rgba(255,255,255,.05);">
+          <p class="tiny" style="margin:0;">
+            <strong>New to the portal?</strong> Create a free account — no documents needed to browse,
+            save or track. <a href="/register" style="color:var(--primary); font-weight:600;">Register →</a>
+          </p>
+        </div>
+      </aside>
+
+      <div class="auth-form">
+        <h1>Sign in</h1>
+        <p class="sub">Use the email you registered your applications with.</p>
+
+        {% if error %}<div class="form-error" role="alert"><svg class="ico"><use href="#i-alert"></use></svg><span>{{ error }}</span></div>{% endif %}
+
+        <form method="post" action="/login">
+          <input type="hidden" name="next" value="{{ next }}">
+          <div class="field">
+            <label for="email">Email address</label>
+            <input id="email" class="input" type="email" name="email" value="{{ email }}" required autocomplete="email" placeholder="you@example.com">
+          </div>
+          <div class="field">
+            <label for="password">Password</label>
+            <input id="password" class="input" type="password" name="password" required autocomplete="current-password" placeholder="••••••••">
+          </div>
+          <button class="btn btn-primary btn-block btn-lg" type="submit">Sign in <svg class="ico"><use href="#i-arrow-right"></use></svg></button>
+        </form>
+
+        <div class="demo-box">
+          <strong>Demo accounts</strong>
+          <div class="demo-row"><span>Student</span><code>aarav.sharma@example.com</code></div>
+          <div class="demo-row"><span>Password</span><code>Student@123</code></div>
+          <div class="demo-row" style="margin-top:6px;"><span>Admin</span><code>admin@scholarshiphub.in</code></div>
+          <div class="demo-row"><span>Password</span><code>Admin@123</code></div>
+        </div>
+
+        <p class="auth-alt">Don't have an account? <a href="/register">Create one free</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

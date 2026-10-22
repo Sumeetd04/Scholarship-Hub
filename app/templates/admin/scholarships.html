@@ -1,0 +1,58 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Manage scholarships · Admin{% endblock %}
+
+{% block admin %}
+<div class="admin-header">
+  <div>
+    <span class="eyebrow"><svg class="ico"><use href="#i-book"></use></svg> Catalogue</span>
+    <h1 style="margin-top:6px;">Scholarships</h1>
+    <p>{{ total }} scheme{{ '' if total == 1 else 's' }} in the catalogue.</p>
+  </div>
+  <div class="row" style="gap:8px;">
+    <form method="get" action="/admin/scholarships" class="row" style="gap:8px;">
+      <input class="input" name="q" value="{{ q }}" placeholder="Search name, provider, state" style="width:250px;">
+      <button class="btn btn-ghost btn-sm" type="submit"><svg class="ico"><use href="#i-search"></use></svg></button>
+    </form>
+    <a href="/admin/scholarships/new" class="btn btn-primary btn-sm"><svg class="ico"><use href="#i-plus"></use></svg> New scheme</a>
+  </div>
+</div>
+
+<div class="glass dash-panel">
+  <div class="table-wrap">
+    <table class="data">
+      <thead>
+        <tr><th>Scheme</th><th>Category</th><th>State</th><th>Award</th><th>Deadline</th><th>Flags</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for s in scholarships %}
+          <tr>
+            <td style="max-width:320px;">
+              <strong>{{ s.name | truncate(62) }}</strong>
+              <div class="tiny">{{ s.provider | truncate(52) }}</div>
+            </td>
+            <td><span class="pill pill-soft">{{ s.category | replace(' Government','') }}</span></td>
+            <td>{{ s.state }}</td>
+            <td>{{ s.amount_value | short_amount }}</td>
+            <td>{{ s.deadline | date_human }}</td>
+            <td>
+              {% if s.featured %}<span class="pill pill-amber">Featured</span>{% endif %}
+              <span class="pill {{ 'pill-success' if s.status == 'open' else 'pill-muted' }}">{{ s.status }}</span>
+            </td>
+            <td>
+              <div class="cell-actions">
+                <a class="mini-btn" href="/scholarships/{{ s.slug }}" title="View public page" target="_blank"><svg class="ico"><use href="#i-external"></use></svg></a>
+                <a class="mini-btn" href="/admin/scholarships/{{ s.id }}/edit" title="Edit"><svg class="ico"><use href="#i-edit"></use></svg></a>
+                <form method="post" action="/admin/scholarships/{{ s.id }}/delete" data-confirm="Delete “{{ s.name }}”? Applications for it will also be removed.">
+                  <button class="mini-btn danger" type="submit" title="Delete"><svg class="ico"><use href="#i-trash"></use></svg></button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="7" class="muted">No schemes match that search. <a href="/admin/scholarships" style="color:var(--primary);">Reset</a></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Verify your identity · {{ APP_NAME }}{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container-sm">
+    <nav class="breadcrumb"><a href="/">Home</a><span class="sep">/</span><a href="/track">Track</a><span class="sep">/</span><span>Verify</span></nav>
+
+    <div class="glass track-panel glass-sheen">
+      <span class="eyebrow"><svg class="ico"><use href="#i-lock"></use></svg> One more step</span>
+      <h1 style="font-size:1.7rem; margin:10px 0 8px;">Verify it's your application</h1>
+      <p class="small">
+        We found <strong class="mono">{{ app.application_no }}</strong> for
+        <strong>{{ app.scholarship_name }}</strong>{% if app.full_name %} applied by
+        <strong>{{ app.full_name.split(' ')[0] }} {{ app.full_name.split(' ')[-1][0] if app.full_name.split(' ')|length > 1 else '' }}.</strong>{% endif %}
+        Enter the date of birth on the application to open the full timeline.
+      </p>
+
+      {% if error %}<div class="form-error" style="margin-top:18px;"><svg class="ico"><use href="#i-alert"></use></svg><span>{{ error }}</span></div>{% endif %}
+
+      <form method="post" action="/track" style="margin-top:22px;">
+        <input type="hidden" name="app_no" value="{{ app.application_no }}">
+        <div class="field" style="max-width:320px;">
+          <label for="vDob">Date of birth</label>
+          <input id="vDob" class="input" type="date" name="dob" required autofocus>
+        </div>
+        <button class="btn btn-primary" type="submit"><svg class="ico"><use href="#i-lock"></use></svg> Unlock timeline</button>
+      </form>
+
+      <p class="tiny muted" style="margin-top:16px;">
+        Signed in as the applicant? <a href="/login" style="color:var(--primary);">Sign in</a> and your dashboard opens every application without a DOB check.
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}

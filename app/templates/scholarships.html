@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% block title %}All scholarships for Indian students · {{ APP_NAME }}{% endblock %}
+{% block description %}Browse {{ total }} scholarships available to Indian students — filter by state, level, category and deadline.{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a><span class="sep">/</span><span>Scholarships</span>
+    </nav>
+    <div class="between" style="align-items:flex-end;">
+      <div>
+        <span class="eyebrow"><svg class="ico"><use href="#i-book"></use></svg> Catalogue</span>
+        <h1 style="margin-top:8px;">Scholarships open to Indian students</h1>
+        <p>Every scheme is verified against the official 2026-27 notification. Filter by what actually matters: your state, your level and the money.</p>
+      </div>
+      <div class="row" style="gap:10px;">
+        <a href="/finder" class="btn btn-soft"><svg class="ico"><use href="#i-sparkles"></use></svg> Match me</a>
+        <a href="/states" class="btn btn-ghost"><svg class="ico"><use href="#i-map"></use></svg> By state</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-tight" style="padding-top: 10px;">
+  <div class="container">
+    <div class="catalog">
+      <!-- Filters ---------------------------------------------------------->
+      <aside>
+        <form class="glass filters" method="get" action="/scholarships">
+          <h3><svg class="ico"><use href="#i-filter"></use></svg> Refine results</h3>
+
+          <div class="filter-group">
+            <span>Keyword</span>
+            <input class="input" type="search" name="q" value="{{ filters.q }}" placeholder="Scheme, provider, tag…">
+          </div>
+
+          <div class="filter-group">
+            <span>Category</span>
+            <select class="select" name="category">
+              <option value="">All categories</option>
+              {% for c in CATEGORIES %}
+                <option value="{{ c.name }}" {{ 'selected' if filters.category == c.name }}>{{ c.name }} ({{ cat_counts.get(c.name, 0) }})</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <span>State / UT</span>
+            <select class="select" name="state">
+              <option value="">All India + states</option>
+              {% for st in all_states %}
+                <option value="{{ st }}" {{ 'selected' if filters.state == st }}>{{ st }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <span>Study level</span>
+            <select class="select" name="level">
+              <option value="">Any level</option>
+              {% for lv in LEVELS %}
+                <option value="{{ lv }}" {{ 'selected' if filters.level == lv }}>{{ lv }} ({{ level_counts.get(lv, 0) }})</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <span>Who can apply</span>
+            <select class="select" name="gender">
+              <option value="">Everyone</option>
+              <option value="Female" {{ 'selected' if filters.gender == 'Female' }}>Girls / women only</option>
+            </select>
+            <label class="check" style="margin-top:12px;">
+              <input type="checkbox" name="show" value="all" {{ 'checked' if filters.show == 'all' }}>
+              <span>Include schemes closed for this cycle</span>
+            </label>
+          </div>
+
+          <div class="row" style="gap:8px;">
+            <button class="btn btn-primary grow" type="submit">Apply filters</button>
+            <a href="/scholarships" class="btn btn-ghost" title="Reset filters"><svg class="ico"><use href="#i-x"></use></svg></a>
+          </div>
+        </form>
+
+        <div class="glass card card-tight sch-sticky-gap" style="margin-top:16px;">
+          <span class="eyebrow"><svg class="ico"><use href="#i-trend-up"></use></svg> Snapshot</span>
+          <div class="kv" style="margin-top:10px;"><span>Live schemes</span><strong>{{ stats.total }}</strong></div>
+          <div class="kv"><span>Closing in 30 days</span><strong>{{ stats.closing }}</strong></div>
+          <div class="kv"><span>Biggest award</span><strong>{{ stats.top_award | short_amount }}</strong></div>
+          <div class="kv"><span>States covered</span><strong>{{ stats.states }}</strong></div>
+        </div>
+      </aside>
+
+      <!-- Results ---------------------------------------------------------->
+      <div>
+        <div class="results-bar">
+          <div>
+            <h2>{{ total }} scheme{{ '' if total == 1 else 's' }} found</h2>
+            {% if total %}<span class="muted">Showing {{ (page - 1) * page_size + 1 }}–{{ [page * page_size, total] | min }} of {{ total }}</span>{% endif %}
+          </div>
+          <form class="sort-form" method="get" action="/scholarships">
+            <input type="hidden" name="q" value="{{ filters.q }}">
+            <input type="hidden" name="category" value="{{ filters.category }}">
+            <input type="hidden" name="state" value="{{ filters.state }}">
+            <input type="hidden" name="level" value="{{ filters.level }}">
+            <input type="hidden" name="gender" value="{{ filters.gender }}">
+            <input type="hidden" name="show" value="{{ filters.show }}">
+            <label for="sort">Sort by</label>
+            <select id="sort" name="sort" class="select" data-autosubmit>
+              <option value="deadline" {{ 'selected' if filters.sort == 'deadline' }}>Deadline (soonest)</option>
+              <option value="amount" {{ 'selected' if filters.sort == 'amount' }}>Award (highest)</option>
+              <option value="newest" {{ 'selected' if filters.sort == 'newest' }}>Recently added</option>
+              <option value="az" {{ 'selected' if filters.sort == 'az' }}>Name (A–Z)</option>
+            </select>
+          </form>
+        </div>
+
+        <div class="active-filters">
+          {% if filters.q %}<a class="chip is-active" href="{{ request.url.remove_query_params('q') }}">“{{ filters.q }}” <svg class="ico" style="width:12px;height:12px;"><use href="#i-x"></use></svg></a>{% endif %}
+          {% if filters.category %}<a class="chip is-active" href="{{ request.url.remove_query_params('category') }}">{{ filters.category }} <svg class="ico" style="width:12px;height:12px;"><use href="#i-x"></use></svg></a>{% endif %}
+          {% if filters.state %}<a class="chip is-active" href="{{ request.url.remove_query_params('state') }}">{{ filters.state }} <svg class="ico" style="width:12px;height:12px;"><use href="#i-x"></use></svg></a>{% endif %}
+          {% if filters.level %}<a class="chip is-active" href="{{ request.url.remove_query_params('level') }}">{{ filters.level }} <svg class="ico" style="width:12px;height:12px;"><use href="#i-x"></use></svg></a>{% endif %}
+          {% if filters.gender %}<a class="chip is-active" href="{{ request.url.remove_query_params('gender') }}">Girls only <svg class="ico" style="width:12px;height:12px;"><use href="#i-x"></use></svg></a>{% endif %}
+          {% if filters.show == 'all' %}<a class="chip is-active" href="{{ request.url.remove_query_params('show') }}">Including closed <svg class="ico" style="width:12px;height:12px;"><use href="#i-x"></use></svg></a>{% endif %}
+        </div>
+
+        {% if scholarships %}
+          <div class="sch-grid sch-grid-2">
+            {% for s in scholarships %}
+              {% include "partials/scholarship_card.html" %}
+            {% endfor %}
+          </div>
+
+          {% if pages > 1 %}
+            <nav class="pagination" aria-label="Pagination">
+              {% if page > 1 %}
+                <a href="{{ request.url.include_query_params(page=page-1) }}" aria-label="Previous page"><svg class="ico"><use href="#i-arrow-left"></use></svg></a>
+              {% endif %}
+              {% for p in page_items %}
+                {% if p is none %}
+                  <span style="border:0;background:none;">…</span>
+                {% elif p == page %}
+                  <span class="is-current" aria-current="page">{{ p }}</span>
+                {% else %}
+                  <a href="{{ request.url.include_query_params(page=p) }}">{{ p }}</a>
+                {% endif %}
+              {% endfor %}
+              {% if page < pages %}
+                <a href="{{ request.url.include_query_params(page=page+1) }}" aria-label="Next page"><svg class="ico"><use href="#i-arrow-right"></use></svg></a>
+              {% endif %}
+            </nav>
+          {% endif %}
+        {% else %}
+          <div class="glass empty">
+            <svg class="ico"><use href="#i-search"></use></svg>
+            <h3>No schemes match those filters</h3>
+            <p>Try a broader keyword, another state, or reset the filters to see the full catalogue.</p>
+            <div class="row" style="justify-content:center;">
+              <a href="/scholarships" class="btn btn-primary">Reset filters</a>
+              <a href="/finder" class="btn btn-ghost">Use the eligibility finder</a>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

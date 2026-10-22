@@ -1,0 +1,41 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Students · Admin{% endblock %}
+
+{% block admin %}
+<div class="admin-header">
+  <div>
+    <span class="eyebrow"><svg class="ico"><use href="#i-users"></use></svg> Directory</span>
+    <h1 style="margin-top:6px;">Registered students</h1>
+    <p>{{ students | length }} student account{{ '' if students | length == 1 else 's' }}.</p>
+  </div>
+</div>
+
+<div class="glass dash-panel">
+  <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th>Student</th><th>OTR</th><th>State</th><th>Category</th><th>Level</th><th>Applications</th><th>Approved</th><th>Joined</th></tr></thead>
+      <tbody>
+        {% for s in students %}
+          <tr>
+            <td>
+              <div class="row" style="gap:8px; flex-wrap:nowrap;">
+                <span class="avatar" style="width:28px;height:28px;font-size:.64rem;">{{ s.full_name | initials }}</span>
+                <div><strong>{{ s.full_name }}</strong><div class="tiny">{{ s.email }}</div></div>
+              </div>
+            </td>
+            <td class="mono tiny">{{ s.otr or '—' }}</td>
+            <td>{{ s.state or '—' }}</td>
+            <td>{{ s.category or '—' }}</td>
+            <td>{{ s.level or '—' }}</td>
+            <td><span class="pill pill-soft">{{ s.apps }}</span></td>
+            <td><span class="pill {{ 'pill-success' if s.approved else 'pill-soft' }}">{{ s.approved or 0 }}</span></td>
+            <td class="tiny">{{ s.created_at | date_human }}</td>
+          </tr>
+        {% else %}
+          <tr><td colspan="8" class="muted">No students registered yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

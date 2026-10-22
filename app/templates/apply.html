@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block title %}Apply for {{ sch.name }} · {{ APP_NAME }}{% endblock %}
+
+{% block content %}
+<section class="section-tight" style="padding-top: 30px;">
+  <div class="container">
+    <nav class="breadcrumb">
+      <a href="/">Home</a><span class="sep">/</span>
+      <a href="/scholarships">Scholarships</a><span class="sep">/</span>
+      <a href="/scholarships/{{ sch.slug }}">{{ sch.name | truncate(42) }}</a><span class="sep">/</span>
+      <span>Apply</span>
+    </nav>
+
+    <div class="detail-grid">
+      <div>
+        <div class="glass detail-head" style="padding:24px 26px;">
+          <span class="eyebrow"><svg class="ico"><use href="#i-send"></use></svg> Application form</span>
+          <h1 style="font-size:1.7rem; margin:8px 0 6px;">Apply for {{ sch.name }}</h1>
+          <p class="small" style="margin:0;">Everything is prefilled from your profile. Check each field carefully — the nodal officer verifies it against your documents.</p>
+        </div>
+
+        {% if error %}
+          <div class="form-error" style="margin-top:18px;" role="alert">
+            <svg class="ico"><use href="#i-alert"></use></svg><span>{{ error }}</span>
+          </div>
+        {% endif %}
+
+        <form class="glass card" method="post" action="/apply/{{ sch.slug }}" style="margin-top:18px;">
+          <div class="form-section">
+            <h3><svg class="ico"><use href="#i-user"></use></svg> Personal details</h3>
+            <div class="form-grid">
+              <div class="field">
+                <label for="full_name">Full name (as per documents)</label>
+                <input id="full_name" class="input" name="full_name" value="{{ form.full_name or '' }}" required>
+              </div>
+              <div class="field">
+                <label for="dob">Date of birth</label>
+                <input id="dob" class="input" type="date" name="dob" value="{{ form.dob or '' }}" required>
+              </div>
+              <div class="field">
+                <label for="gender">Gender</label>
+                <select id="gender" class="select" name="gender">
+                  {% for g in GENDERS %}<option value="{{ g }}" {{ 'selected' if form.gender == g }}>{{ g }}</option>{% endfor %}
+                </select>
+              </div>
+              <div class="field">
+                <label for="category">Social category</label>
+                <select id="category" class="select" name="category">
+                  {% for c in SOCIAL_CATEGORIES %}<option value="{{ c }}" {{ 'selected' if form.category == c }}>{{ c }}</option>{% endfor %}
+                </select>
+              </div>
+              <div class="field">
+                <label for="state">State of domicile</label>
+                <select id="state" class="select" name="state" required>
+                  <option value="">Select state</option>
+                  {% for st in STATES %}<option value="{{ st }}" {{ 'selected' if form.state == st }}>{{ st }}</option>{% endfor %}
+                </select>
+              </div>
+              <div class="field">
+                <label for="annual_income">Annual family income (₹)</label>
+                <input id="annual_income" class="input" type="number" min="0" step="10000" name="annual_income" value="{{ form.annual_income or 0 }}" required>
+                <span class="hint">Scheme ceiling: {{ sch.income_limit | inr if sch.income_limit else 'no income limit' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3><svg class="ico"><use href="#i-graduation"></use></svg> Education details</h3>
+            <div class="form-grid">
+              <div class="field">
+                <label for="institute">Institute / school</label>
+                <input id="institute" class="input" name="institute" value="{{ form.institute or '' }}" required placeholder="e.g. COEP Technological University, Pune">
+              </div>
+              <div class="field">
+                <label for="course">Course / class</label>
+                <input id="course" class="input" name="course" value="{{ form.course or '' }}" placeholder="e.g. B.Tech Computer Engineering">
+              </div>
+              <div class="field">
+                <label for="level">Study level</label>
+                <select id="level" class="select" name="level">
+                  {% for lv in LEVELS %}<option value="{{ lv }}" {{ 'selected' if form.level == lv }}>{{ lv }}</option>{% endfor %}
+                </select>
+              </div>
+              <div class="field">
+                <label for="note">Note to the reviewing officer <span class="muted">(optional)</span></label>
+                <input id="note" class="input" name="note" value="{{ form.note or '' }}" placeholder="Anything specific about your case">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3><svg class="ico"><use href="#i-shield"></use></svg> Declaration</h3>
+            <label class="check">
+              <input type="checkbox" name="consent" value="yes" required>
+              <span>
+                I confirm that the information above is true and matches my documents. I understand that
+                false information can lead to rejection and recovery of any amount disbursed, and that
+                Scholarship Hub will share this application with <strong>{{ sch.provider }}</strong>.
+              </span>
+            </label>
+          </div>
+
+          <div class="row" style="gap:10px; margin-top:26px;">
+            <button class="btn btn-primary btn-lg" type="submit">
+              <svg class="ico"><use href="#i-send"></use></svg> Submit application
+            </button>
+            <a href="/scholarships/{{ sch.slug }}" class="btn btn-ghost btn-lg">Cancel</a>
+          </div>
+          <p class="apply-note" style="text-align:left; margin-top:14px;">Submitting generates a permanent submission ID. You can track it any time from your dashboard.</p>
+        </form>
+      </div>
+
+      <aside>
+        <div class="glass apply-card">
+          <span class="amount-sub">You are applying for</span>
+          <h3 style="font-size:1.02rem; margin:8px 0 4px; line-height:1.4;">{{ sch.name }}</h3>
+          <p class="tiny muted">{{ sch.provider }}</p>
+
+          <div class="apply-facts" style="margin-top:18px;">
+            <div class="apply-fact"><span><svg class="ico"><use href="#i-wallet"></use></svg> Award</span><strong>{{ sch.amount }}</strong></div>
+            <div class="apply-fact"><span><svg class="ico"><use href="#i-calendar"></use></svg> Deadline</span><strong>{{ sch.deadline | date_human }}</strong></div>
+            <div class="apply-fact"><span><svg class="ico"><use href="#i-clock"></use></svg> Time left</span><strong>{{ sch.days_left }} days</strong></div>
+            <div class="apply-fact"><span><svg class="ico"><use href="#i-map"></use></svg> Region</span><strong>{{ sch.state }}</strong></div>
+          </div>
+
+          <div>
+            <span class="lbl" style="font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted-2);">Documents needed</span>
+            <ul class="bullet-list" style="margin-top:10px; gap:8px;">
+              {% for doc in sch.documents_list[:4] %}
+                <li style="font-size:.78rem;">{{ doc | replace('• ', '') }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+
+          <p class="apply-note">You do not upload documents here yet — you will be asked for them at institute verification.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+{% endblock %}
