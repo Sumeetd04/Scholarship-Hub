@@ -1,0 +1,71 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Applications · Admin{% endblock %}
+
+{% block admin %}
+<div class="admin-header">
+  <div>
+    <span class="eyebrow"><svg class="ico"><use href="#i-file"></use></svg> Workflow</span>
+    <h1 style="margin-top:6px;">Applications</h1>
+    <p>{{ stats.total }} total · {{ stats.active }} in flight · {{ stats.approved }} approved · {{ stats.rejected }} rejected</p>
+  </div>
+  <form method="get" action="/admin/applications" class="row" style="gap:8px;">
+    <input type="hidden" name="status" value="{{ status_filter }}">
+    <input class="input" name="q" value="{{ q }}" placeholder="App no, student or scheme" style="width:250px;">
+    <button class="btn btn-ghost btn-sm" type="submit"><svg class="ico"><use href="#i-search"></use></svg></button>
+  </form>
+</div>
+
+<div class="row" style="gap:8px; margin-bottom:16px;">
+  <a class="chip {{ 'is-active' if not status_filter }}" href="/admin/applications">All ({{ stats.total }})</a>
+  {% for key, meta in STATUS_META.items() %}
+    {% set n = counts.get(key, 0) %}
+    {% if n %}
+      <a class="chip {{ 'is-active' if status_filter == key }}" href="/admin/applications?status={{ key }}">{{ meta.label }} ({{ n }})</a>
+    {% endif %}
+  {% endfor %}
+</div>
+
+<div class="glass dash-panel">
+  <div class="table-wrap">
+    <table class="data">
+      <thead>
+        <tr><th>Application</th><th>Scheme</th><th>Current status</th><th>Move to</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for a in apps %}
+          <tr>
+            <td>
+              <strong class="mono" style="font-size:.74rem;">{{ a.application_no }}</strong>
+              <div class="tiny">{{ a.full_name }} · {{ a.state or '—' }}</div>
+              <div class="tiny">Updated {{ a.updated_at | relative }}</div>
+            </td>
+            <td style="max-width:260px;">
+              <a href="/scholarships/{{ a.scholarship_slug }}" target="_blank" style="color:var(--ink-strong); font-size:.8rem;">{{ a.scholarship_name | truncate(52) }}</a>
+              <div class="tiny">{{ a.provider | truncate(48) }}</div>
+              {% if a.remarks %}<div class="tiny" style="color:var(--amber);">“{{ a.remarks | truncate(70) }}”</div>{% endif %}
+            </td>
+            <td><span class="status-pill tone-{{ a.status_meta.tone }}">{{ a.status_meta.label }}</span></td>
+            <td>
+              <form method="post" action="/admin/applications/{{ a.id }}/status" class="stack" style="gap:6px;">
+                <input type="hidden" name="next" value="{{ request.url }}">
+                <div class="inline-status">
+                  <select class="select" name="status" aria-label="Update status for {{ a.application_no }}">
+                    {% for s in status_options %}<option value="{{ s }}" {{ 'selected' if s == a.status }}>{{ STATUS_META[s].label }}</option>{% endfor %}
+                  </select>
+                  <button class="btn btn-soft" type="submit">Save</button>
+                </div>
+                <input class="input" name="remarks" placeholder="Remarks visible to student" style="padding:7px 10px; font-size:.74rem; border-radius:8px;">
+              </form>
+            </td>
+            <td>
+              <a class="mini-btn" href="/track/{{ a.application_no }}" target="_blank" title="Open tracker"><svg class="ico"><use href="#i-external"></use></svg></a>
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="5" class="muted">No applications match these filters.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}About Scholarship Hub · {{ APP_NAME }}{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <nav class="breadcrumb"><a href="/">Home</a><span class="sep">/</span><span>About</span></nav>
+    <span class="eyebrow"><svg class="ico"><use href="#i-graduation"></use></svg> About the portal</span>
+    <h1 style="margin-top:8px;">Built so no student misses money they already qualify for.</h1>
+    <p>India spends thousands of crores on scholarships every year. A large share goes unclaimed, not because students are ineligible, but because the information is scattered across dozens of state portals and central notices.</p>
+  </div>
+</section>
+
+<section class="section-tight" style="padding-top: 12px;">
+  <div class="container">
+    <div class="info-grid">
+      <div class="glass card info-card">
+        <svg class="ico"><use href="#i-book"></use></svg>
+        <h3>One catalogue</h3>
+        <p>Central ministries, state portals (MahaDBT, ePASS, OASIS, e-Grantz), CSR programmes and family foundations, described in the same format so they are actually comparable.</p>
+      </div>
+      <div class="glass card info-card">
+        <svg class="ico"><use href="#i-search"></use></svg>
+        <h3>One tracker</h3>
+        <p>Every application filed here gets a submission ID and a timeline showing who currently holds the file — institute, department or sanction committee.</p>
+      </div>
+      <div class="glass card info-card">
+        <svg class="ico"><use href="#i-shield"></use></svg>
+        <h3>Zero fees, zero agents</h3>
+        <p>No processing charges, no “guaranteed approval” packages. We show the official portal for every scheme and warn students about known scams.</p>
+      </div>
+    </div>
+
+    <div class="two-col mt-4">
+      <div class="glass card prose">
+        <h2 style="margin-top:0;">How the catalogue is compiled</h2>
+        <p>Each scheme is written from its official 2026-27 notification: the implementing ministry or foundation, award range, income ceiling, eligible study levels and the portal you apply on. Deadlines follow the annual cycle and are re-checked every fortnight.</p>
+        <h3>What we deliberately do</h3>
+        <ul>
+          <li>Show the official link for every scheme, so you can verify before paying anything.</li>
+          <li>Keep the catalogue India-only — scholarships for study abroad are listed only when an Indian government body funds them.</li>
+          <li>Explain every application status in plain language, including what to do next.</li>
+          <li>Never store Aadhaar numbers, bank passwords or OTPs.</li>
+        </ul>
+        <h3>What we are not</h3>
+        <p>Scholarship Hub is an independent student tool, not a government portal. Sanctions, disbursals and rejections are decided entirely by the scheme's nodal department. If our catalogue and the official notification disagree, the official notification wins.</p>
+      </div>
+
+      <aside>
+        <div class="glass card">
+          <span class="eyebrow"><svg class="ico"><use href="#i-chart"></use></svg> By the numbers</span>
+          <div class="kv" style="margin-top:12px;"><span>Schemes catalogued</span><strong>{{ stats.total }}</strong></div>
+          <div class="kv"><span>States covered</span><strong>{{ stats.states }}</strong></div>
+          <div class="kv"><span>Central schemes</span><strong>{{ stats.central }}</strong></div>
+          <div class="kv"><span>Applications tracked</span><strong>{{ stats.tracked }}</strong></div>
+          <div class="divider"></div>
+          <div class="kv"><span>Cost to students</span><strong style="color:var(--success);">₹0</strong></div>
+          <div class="kv"><span>Data residency</span><strong>India</strong></div>
+          <div class="kv"><span>Built with</span><strong>FastAPI · SQLite</strong></div>
+        </div>
+
+        <div class="glass card card-tight" style="margin-top:16px;">
+          <div style="display:flex; gap:10px; align-items:flex-start;">
+            <svg class="ico" style="color:var(--amber); width:18px; height:18px; flex:none; margin-top:2px;"><use href="#i-alert"></use></svg>
+            <p class="tiny muted" style="margin:0;">
+              <strong style="display:block; margin-bottom:4px; color:var(--ink);">Disclaimer</strong>
+              Scheme details are compiled for guidance. Always confirm eligibility, deadlines and fees on the official portal before applying.
+            </p>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="glass cta" style="margin-top:34px;">
+      <div>
+        <span class="eyebrow"><svg class="ico"><use href="#i-heart"></use></svg> Made for Indian students</span>
+        <h2 style="margin-top:10px; font-size:1.5rem;">Start with the money you already qualify for.</h2>
+        <p>Two minutes on the eligibility finder usually surfaces four or five schemes students did not know existed.</p>
+      </div>
+      <a href="/finder" class="btn btn-primary btn-lg">Find my scholarships <svg class="ico"><use href="#i-arrow-right"></use></svg></a>
+    </div>
+  </div>
+</section>
+{% endblock %}

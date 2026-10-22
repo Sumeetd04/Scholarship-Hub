@@ -1,0 +1,141 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}{{ 'New scholarship' if mode == 'create' else 'Edit scholarship' }} · Admin{% endblock %}
+
+{% block admin %}
+<div class="admin-header">
+  <div>
+    <span class="eyebrow"><svg class="ico"><use href="#i-edit"></use></svg> Catalogue</span>
+    <h1 style="margin-top:6px;">{{ 'Add a scholarship' if mode == 'create' else 'Edit scholarship' }}</h1>
+    <p>{{ 'Publish a new scheme to the public catalogue.' if mode == 'create' else 'Changes go live immediately.' }}</p>
+  </div>
+  <a href="/admin/scholarships" class="btn btn-ghost btn-sm"><svg class="ico"><use href="#i-arrow-left"></use></svg> Back to list</a>
+</div>
+
+{% if error %}<div class="form-error"><svg class="ico"><use href="#i-alert"></use></svg><span>{{ error }}</span></div>{% endif %}
+
+<form class="glass card" method="post" action="{{ '/admin/scholarships' if mode == 'create' else '/admin/scholarships/' ~ sch.id }}">
+  <div class="form-section">
+    <h3><svg class="ico"><use href="#i-book"></use></svg> Identity</h3>
+    <div class="form-grid">
+      <div class="field">
+        <label for="name">Scheme name</label>
+        <input id="name" class="input" name="name" value="{{ sch.name or '' }}" required>
+      </div>
+      <div class="field">
+        <label for="provider">Provider / ministry</label>
+        <input id="provider" class="input" name="provider" value="{{ sch.provider or '' }}" required>
+      </div>
+      <div class="field">
+        <label for="slug">URL slug <span class="muted">(optional)</span></label>
+        <input id="slug" class="input" name="slug" value="{{ sch.slug or '' }}" placeholder="auto-generated from name">
+      </div>
+      <div class="field">
+        <label for="official_link">Official link</label>
+        <input id="official_link" class="input" type="url" name="official_link" value="{{ sch.official_link or 'https://scholarships.gov.in' }}">
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3><svg class="ico"><use href="#i-grid"></use></svg> Classification</h3>
+    <div class="form-grid-3">
+      <div class="field">
+        <label for="category">Category</label>
+        <select id="category" class="select" name="category">
+          {% for c in categories %}<option value="{{ c }}" {{ 'selected' if sch.category == c }}>{{ c }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label for="level">Study level</label>
+        <select id="level" class="select" name="level">
+          {% for lv in levels %}<option value="{{ lv }}" {{ 'selected' if sch.level == lv }}>{{ lv }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label for="state">State</label>
+        <select id="state" class="select" name="state">
+          {% for st in states %}<option value="{{ st }}" {{ 'selected' if sch.state == st }}>{{ st }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label for="gender">Gender eligibility</label>
+        <select id="gender" class="select" name="gender">
+          <option value="Any" {{ 'selected' if sch.gender in [None, '', 'Any'] }}>Any</option>
+          <option value="Female" {{ 'selected' if sch.gender == 'Female' }}>Girls / women only</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="apply_mode">Application mode</label>
+        <input id="apply_mode" class="input" name="apply_mode" value="{{ sch.apply_mode or 'Online (National Scholarship Portal)' }}">
+      </div>
+      <div class="field">
+        <label for="status">Listing status</label>
+        <select id="status" class="select" name="status">
+          <option value="open" {{ 'selected' if sch.status == 'open' }}>Open</option>
+          <option value="closed" {{ 'selected' if sch.status == 'closed' }}>Closed</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3><svg class="ico"><use href="#i-wallet"></use></svg> Money &amp; dates</h3>
+    <div class="form-grid-3">
+      <div class="field">
+        <label for="amount">Award display text</label>
+        <input id="amount" class="input" name="amount" value="{{ sch.amount or '' }}" placeholder="₹50,000 / year">
+      </div>
+      <div class="field">
+        <label for="amount_value">Award value (₹, numeric)</label>
+        <input id="amount_value" class="input" type="number" min="0" name="amount_value" value="{{ sch.amount_value or 0 }}">
+        <span class="hint">Used for sorting and summaries.</span>
+      </div>
+      <div class="field">
+        <label for="deadline">Deadline</label>
+        <input id="deadline" class="input" type="date" name="deadline" value="{{ sch.deadline or '' }}" required>
+      </div>
+      <div class="field">
+        <label for="income_limit">Income ceiling (₹, 0 = none)</label>
+        <input id="income_limit" class="input" type="number" min="0" step="10000" name="income_limit" value="{{ sch.income_limit or 0 }}">
+      </div>
+      <div class="field">
+        <label for="tags">Tags (comma separated)</label>
+        <input id="tags" class="input" name="tags" value="{{ sch.tags or '' }}" placeholder="sc,engineering,girls">
+      </div>
+      <div class="field">
+        <label>Flags</label>
+        <label class="check" style="margin-bottom:6px;"><input type="checkbox" name="featured" {{ 'checked' if sch.featured }}> Featured on homepage</label>
+        <label class="check" style="margin-bottom:6px;"><input type="checkbox" name="minority" {{ 'checked' if sch.minority }}> Minority communities</label>
+        <label class="check"><input type="checkbox" name="disability" {{ 'checked' if sch.disability }}> Disability reservation</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3><svg class="ico"><use href="#i-file"></use></svg> Content</h3>
+    <div class="field">
+      <label for="description">Description</label>
+      <textarea id="description" class="textarea" name="description" required>{{ sch.description or '' }}</textarea>
+    </div>
+    <div class="field">
+      <label for="eligibility">Eligibility — one bullet per line</label>
+      <textarea id="eligibility" class="textarea" name="eligibility" required placeholder="• Domicile of Maharashtra&#10;• Family income below ₹8 lakh">{{ sch.eligibility or '' }}</textarea>
+    </div>
+    <div class="field">
+      <label for="benefits">Benefits — one bullet per line</label>
+      <textarea id="benefits" class="textarea" name="benefits" required>{{ sch.benefits or '' }}</textarea>
+    </div>
+    <div class="field">
+      <label for="documents">Documents — one bullet per line</label>
+      <textarea id="documents" class="textarea" name="documents" required>{{ sch.documents or '' }}</textarea>
+    </div>
+  </div>
+
+  <div class="row" style="gap:10px;">
+    <button class="btn btn-primary btn-lg" type="submit">
+      <svg class="ico"><use href="#i-check"></use></svg> {{ 'Publish scholarship' if mode == 'create' else 'Save changes' }}
+    </button>
+    <a href="/admin/scholarships" class="btn btn-ghost btn-lg">Cancel</a>
+  </div>
+</form>
+{% endblock %}

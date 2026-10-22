@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · {{ APP_NAME }}{% endblock %}
+
+{% block content %}
+<section class="section-tight" style="padding-top: 32px;">
+  <div class="container">
+    <div class="dash-head">
+      <div>
+        <span class="eyebrow"><svg class="ico"><use href="#i-grid"></use></svg> Student dashboard</span>
+        <h1 style="margin-top:6px;">Namaste, {{ current_user['full_name'].split(' ')[0] }} 👋</h1>
+        <p>Your OTR is <span class="mono" style="color:var(--primary);">{{ current_user['otr'] or '—' }}</span> · one identity for every scheme.</p>
+      </div>
+      <div class="row" style="gap:10px;">
+        <a href="/scholarships" class="btn btn-ghost"><svg class="ico"><use href="#i-search"></use></svg> Find scholarships</a>
+        <a href="/finder" class="btn btn-primary"><svg class="ico"><use href="#i-sparkles"></use></svg> Match me</a>
+      </div>
+    </div>
+
+    {% if welcome %}
+      <div class="glass card" style="display:flex; gap:14px; align-items:flex-start; padding:16px 20px; margin-bottom:20px; border-color:rgba(69,224,164,.4); background:linear-gradient(150deg, rgba(69,224,164,.12), rgba(255,255,255,.03));">
+        <svg class="ico" style="color:var(--success); width:22px; height:22px; flex:none; margin-top:2px;"><use href="#i-check-circle"></use></svg>
+        <div>
+          <strong>Account created. Welcome aboard.</strong>
+          <p class="small" style="margin-top:4px;">Complete your profile so the finder can rank schemes accurately — then start with the recommended matches below.</p>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="stat-grid" style="margin-bottom:22px;">
+      <div class="glass stat-card">
+        <div class="stat-top">
+          <span class="stat-icon"><svg class="ico"><use href="#i-file"></use></svg></span>
+          <span class="pill pill-soft">All time</span>
+        </div>
+        <strong>{{ stats.total }}</strong>
+        <div class="stat-label">Applications submitted</div>
+        <div class="stat-foot"><span class="up">{{ stats.by_status.get('submitted', 0) }}</span> awaiting first review</div>
+      </div>
+      <div class="glass stat-card">
+        <div class="stat-top">
+          <span class="stat-icon" style="background:rgba(255,194,102,.14); color:var(--amber);"><svg class="ico"><use href="#i-clock"></use></svg></span>
+          <span class="pill pill-warning">In flight</span>
+        </div>
+        <strong>{{ stats.active }}</strong>
+        <div class="stat-label">Active applications</div>
+        <div class="stat-foot"><span class="up">{{ stats.by_status.get('under_review', 0) }}</span> under review right now</div>
+      </div>
+      <div class="glass stat-card">
+        <div class="stat-top">
+          <span class="stat-icon" style="background:rgba(69,224,164,.14); color:var(--success);"><svg class="ico"><use href="#i-check-circle"></use></svg></span>
+          <span class="pill pill-success">Sanctioned</span>
+        </div>
+        <strong>{{ stats.approved }}</strong>
+        <div class="stat-label">Approved / disbursed</div>
+        <div class="stat-foot"><span class="up">{{ stats.disbursed }}</span> already credited via DBT</div>
+      </div>
+      <div class="glass stat-card">
+        <div class="stat-top">
+          <span class="stat-icon" style="background:rgba(55,213,214,.14); color:var(--aqua);"><svg class="ico"><use href="#i-wallet"></use></svg></span>
+          <span class="pill pill-aqua">Awarded</span>
+        </div>
+        <strong>{{ stats.awarded | short_amount }}</strong>
+        <div class="stat-label">Total sanctioned value</div>
+        <div class="stat-foot">Across approved applications</div>
+      </div>
+    </div>
+
+    <div class="dash-grid">
+      <!-- Applications ------------------------------------------------------>
+      <div>
+        <div class="glass dash-panel">
+          <div class="panel-head">
+            <h2><svg class="ico"><use href="#i-file"></use></svg> My applications</h2>
+            <a href="/scholarships" class="link-arrow" style="font-size:.8rem;">Apply to more <svg class="ico" style="width:13px;height:13px;"><use href="#i-arrow-right"></use></svg></a>
+          </div>
+
+          {% if apps %}
+            {% for a in apps %}
+              <div class="app-row">
+                <div>
+                  <h4><a href="/track/{{ a.application_no }}">{{ a.scholarship_name }}</a></h4>
+                  <div class="app-sub">
+                    <span class="mono">{{ a.application_no }}</span>
+                    <span class="dot-sep"></span>
+                    <span>{{ a.provider }}</span>
+                    <span class="dot-sep"></span>
+                    <span>Updated {{ a.updated_at | relative }}</span>
+                  </div>
+                </div>
+                <div class="app-progress">
+                  <div class="progress"><span data-value="{{ a.progress }}" style="width:{{ a.progress }}%;"></span></div>
+                  <small>{{ a.progress }}% · {{ a.status_meta.short }}</small>
+                </div>
+                <div class="row" style="gap:8px; flex-wrap:nowrap;">
+                  <span class="status-pill tone-{{ a.status_meta.tone }}">{{ a.status_meta.label }}</span>
+                  <a href="/track/{{ a.application_no }}" class="chev-btn" aria-label="Open {{ a.application_no }}">
+                    <svg class="ico" style="width:14px;height:14px;"><use href="#i-arrow-right"></use></svg>
+                  </a>
+                </div>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="empty" style="padding:36px 16px;">
+              <svg class="ico"><use href="#i-send"></use></svg>
+              <h3>No applications yet</h3>
+              <p>Start with one of the recommended schemes on the right, or browse the full catalogue.</p>
+              <a href="/scholarships" class="btn btn-primary btn-sm">Browse scholarships</a>
+            </div>
+          {% endif %}
+        </div>
+
+        {% if upcoming %}
+          <div class="glass dash-panel" style="margin-top:20px;">
+            <div class="panel-head">
+              <h2><svg class="ico"><use href="#i-calendar"></use></svg> Deadline radar</h2>
+              <span class="pill pill-amber">Next up</span>
+            </div>
+            {% for a in upcoming %}
+              <a class="mini-app" href="/track/{{ a.application_no }}">
+                <div>
+                  <strong>{{ a.scholarship_name }}</strong>
+                  <small>{{ a.deadline | date_human }} · {{ a.deadline_label }}</small>
+                </div>
+                <span class="status-pill tone-{{ a.status_meta.tone }}">{{ a.status_meta.label }}</span>
+              </a>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <div class="glass dash-panel" style="margin-top:20px;">
+          <div class="panel-head">
+            <h2><svg class="ico"><use href="#i-search"></use></svg> Track another application</h2>
+          </div>
+          <form class="track-form" method="post" action="/track">
+            <div class="field">
+              <label class="sr-only" for="dAppNo">Submission ID</label>
+              <input id="dAppNo" class="input mono" name="app_no" placeholder="SH-2026-100123" required>
+            </div>
+            <div class="field">
+              <label class="sr-only" for="dDob">Date of birth</label>
+              <input id="dDob" class="input" type="date" name="dob" required>
+            </div>
+            <button class="btn btn-primary" type="submit">Track</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Sidebar ----------------------------------------------------------->
+      <aside>
+        <div class="glass profile-card">
+          <div class="profile-top">
+            <span class="avatar avatar-lg">{{ current_user['full_name'] | initials }}</span>
+            <div>
+              <h3>{{ current_user['full_name'] }}</h3>
+              <p>{{ current_user['email'] }}</p>
+            </div>
+          </div>
+          <div class="kv"><span>State</span><strong>{{ current_user['state'] or 'Not set' }}</strong></div>
+          <div class="kv"><span>Level</span><strong>{{ current_user['level'] or 'Not set' }}</strong></div>
+          <div class="kv"><span>Category</span><strong>{{ current_user['category'] or 'Not set' }}</strong></div>
+          <div class="kv"><span>Annual income</span><strong>{{ current_user['annual_income'] | inr }}</strong></div>
+          <div class="completeness">
+            <div class="between" style="margin-bottom:6px;">
+              <span class="tiny muted">Profile completeness</span>
+              <strong class="tiny">{{ profile_pct }}%</strong>
+            </div>
+            <div class="progress"><span data-value="{{ profile_pct }}" style="width:{{ profile_pct }}%;"></span></div>
+          </div>
+          <a href="/profile" class="btn btn-soft btn-block btn-sm">
+            {{ 'Complete profile' if profile_pct < 100 else 'Edit profile' }} <svg class="ico"><use href="#i-arrow-right"></use></svg>
+          </a>
+        </div>
+
+        <div class="glass dash-panel" style="margin-top:20px;">
+          <div class="panel-head">
+            <h2><svg class="ico"><use href="#i-sparkles"></use></svg> Recommended for you</h2>
+          </div>
+          {% if recommended %}
+            {% for s in recommended %}
+              <a class="mini-sch" href="/scholarships/{{ s.slug }}">
+                <span class="score-ring" style="--pct: {{ s.score }}%"><span>{{ s.score }}</span></span>
+                <div class="ms-body">
+                  <strong>{{ s.name }}</strong>
+                  <small>{{ s.category }} · {{ s.deadline_label }}</small>
+                </div>
+              </a>
+            {% endfor %}
+          {% else %}
+            <p class="small muted">You have applied to every open match. Impressive.</p>
+          {% endif %}
+          <a href="/finder" class="btn btn-ghost btn-block btn-sm" style="margin-top:14px;">Refine with the finder <svg class="ico"><use href="#i-arrow-right"></use></svg></a>
+        </div>
+
+        <div class="glass dash-panel" style="margin-top:20px;">
+          <div class="panel-head">
+            <h2><svg class="ico"><use href="#i-star"></use></svg> Saved</h2>
+            <a href="/dashboard/saved" class="link-arrow" style="font-size:.78rem;">All <svg class="ico" style="width:12px;height:12px;"><use href="#i-arrow-right"></use></svg></a>
+          </div>
+          {% if saved %}
+            {% for s in saved %}
+              <a class="mini-sch" href="/scholarships/{{ s.slug }}">
+                <div class="ms-body">
+                  <strong>{{ s.name }}</strong>
+                  <small>{{ s.deadline_label }} · {{ s.short_amount }}</small>
+                </div>
+              </a>
+            {% endfor %}
+          {% else %}
+            <p class="small muted">Tap the star on any scheme to keep it here.</p>
+          {% endif %}
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+{% endblock %}

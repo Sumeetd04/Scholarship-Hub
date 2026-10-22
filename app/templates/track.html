@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}Track your scholarship application · {{ APP_NAME }}{% endblock %}
+{% block description %}Enter your submission ID and date of birth to see the live status of any scholarship application — verification, approval and DBT disbursal.{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <nav class="breadcrumb"><a href="/">Home</a><span class="sep">/</span><span>Track application</span></nav>
+    <span class="eyebrow"><svg class="ico"><use href="#i-search"></use></svg> Application tracker</span>
+    <h1 style="margin-top:8px;">Where is my scholarship?</h1>
+    <p>Every application gets one submission ID. Enter it with your date of birth to see the exact stage, who is holding the file and what happens next.</p>
+  </div>
+</section>
+
+<section class="section-tight" style="padding-top: 6px;">
+  <div class="container">
+    <div class="glass track-panel glass-sheen">
+      {% if error %}
+        <div class="form-error" role="alert">
+          <svg class="ico"><use href="#i-alert"></use></svg><span>{{ error }}</span>
+        </div>
+      {% endif %}
+
+      <form class="track-form" method="post" action="/track">
+        <div class="field">
+          <label for="appNo">Submission ID</label>
+          <input id="appNo" class="input mono" name="app_no" value="{{ app_no }}" placeholder="SH-2026-101043" required autofocus>
+          <span class="hint">Format: SH-YYYY-XXXXXX. It is on your application receipt.</span>
+        </div>
+        <div class="field">
+          <label for="dob">Date of birth</label>
+          <input id="dob" class="input" type="date" name="dob" required>
+          <span class="hint">Used only to verify ownership.</span>
+        </div>
+        <button class="btn btn-primary btn-lg" type="submit"><svg class="ico"><use href="#i-search"></use></svg> Track</button>
+      </form>
+
+      <div class="divider"></div>
+
+      <div class="between" style="align-items:flex-start;">
+        <div>
+          <strong class="small">Just submitted an application?</strong>
+          <p class="tiny" style="margin-top:3px;">Your ID and receipt are emailed to your registered address instantly.</p>
+        </div>
+        {% if demo %}
+          <a href="/track/{{ demo.application_no }}?dob={{ demo.dob }}" class="btn btn-ghost btn-sm">
+            <svg class="ico"><use href="#i-sparkles"></use></svg> Open a demo tracker
+          </a>
+        {% endif %}
+      </div>
+
+      {% if recent %}
+        <div class="divider"></div>
+        <span class="eyebrow"><svg class="ico"><use href="#i-clock"></use></svg> Your recent applications</span>
+        <div style="margin-top:14px;">
+          {% for r in recent %}
+            <a class="mini-app" href="/track/{{ r.application_no }}">
+              <div>
+                <strong>{{ r.name }}</strong>
+                <small class="mono">{{ r.application_no }}</small>
+              </div>
+              <span class="status-pill tone-{{ STATUS_META[r.status].tone }}">{{ STATUS_META[r.status].label }}</span>
+            </a>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Status glossary --------------------------------------------------->
+    <div class="section-head" style="margin-top:48px;">
+      <div>
+        <span class="eyebrow"><svg class="ico"><use href="#i-list"></use></svg> What the statuses mean</span>
+        <h2 style="margin-top:8px;">Nine states, zero jargon</h2>
+      </div>
+      <a href="/faq" class="link-arrow">Full FAQ <svg class="ico"><use href="#i-arrow-right"></use></svg></a>
+    </div>
+
+    <div class="sch-grid">
+      {% for key, meta in STATUS_META.items() %}
+        <div class="glass card card-tight">
+          <div class="between" style="margin-bottom:8px;">
+            <span class="status-pill tone-{{ meta.tone }}">{{ meta.label }}</span>
+            <span class="mono tiny muted">{{ meta.progress }}%</span>
+          </div>
+          <p class="tiny" style="line-height:1.6;">{{ meta.note }}</p>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="glass card mt-3" style="display:flex; gap:14px; align-items:flex-start;">
+      <svg class="ico" style="color:var(--amber); width:20px; height:20px; flex:none; margin-top:2px;"><use href="#i-alert"></use></svg>
+      <div>
+        <strong class="small">Status not moving for over 3 weeks?</strong>
+        <p class="tiny" style="margin-top:4px;">
+          Escalate through <a href="/contact" style="color:var(--primary);">student support</a> with your submission ID.
+          We route it to the nodal officer and log the follow-up on your timeline.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

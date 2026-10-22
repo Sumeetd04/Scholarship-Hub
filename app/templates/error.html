@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} · {{ APP_NAME }}{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container-sm">
+    <div class="glass card center" style="padding: clamp(34px, 6vw, 64px);">
+      <div class="mono gradient-text" style="font-size: clamp(3.4rem, 9vw, 6rem); font-weight: 700; line-height: 1;">{{ code }}</div>
+      <h1 style="font-size: clamp(1.4rem, 3vw, 2rem); margin: 12px 0 10px;">{{ title }}</h1>
+      <p style="max-width: 52ch; margin: 0 auto 26px;">{{ message }}</p>
+      <div class="row" style="justify-content: center; gap: 10px;">
+        <a href="/" class="btn btn-primary"><svg class="ico"><use href="#i-arrow-left"></use></svg> Back home</a>
+        <a href="/scholarships" class="btn btn-ghost">Browse scholarships</a>
+        <a href="/track" class="btn btn-ghost">Track an application</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Scholarships by state · {{ APP_NAME }}{% endblock %}
+{% block description %}Find state government scholarships for every Indian state and union territory — MahaDBT, ePASS, OASIS, e-Grantz, Digital Gujarat and more.{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <nav class="breadcrumb"><a href="/">Home</a><span class="sep">/</span><span>States</span></nav>
+    <span class="eyebrow"><svg class="ico"><use href="#i-map"></use></svg> State directories</span>
+    <h1 style="margin-top:8px;">Scholarships, mapped to your state</h1>
+    <p>State schemes usually carry the biggest fee waivers — and every state runs its own portal. Pick your state to see what is open on MahaDBT, ePASS, OASIS, e-Grantz, Digital Gujarat and their peers.</p>
+
+    <div class="hero-stats" style="grid-template-columns: repeat(3, minmax(0,1fr)); max-width: 640px;">
+      <div class="glass hero-stat"><strong>{{ states | length }}</strong><span>States &amp; UTs</span></div>
+      <div class="glass hero-stat"><strong>{{ all_india }}</strong><span>All-India schemes</span></div>
+      <div class="glass hero-stat"><strong>{{ stats.total }}</strong><span>Schemes total</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section-tight" style="padding-top: 18px;">
+  <div class="container">
+    <div class="glass card" style="padding: 18px 22px; margin-bottom: 24px;">
+      <div class="between">
+        <div class="row" style="gap:10px;">
+          <svg class="ico" style="color:var(--primary);"><use href="#i-landmark"></use></svg>
+          <span class="small">Open to every student in India, regardless of domicile</span>
+        </div>
+        <a href="/scholarships?state=All+India" class="btn btn-soft btn-sm">All-India schemes →</a>
+      </div>
+    </div>
+
+    <div class="sch-grid">
+      {% for st in states %}
+        <a class="glass card-hover cat-card reveal" href="/scholarships?state={{ st.state | urlencode }}" style="min-height:auto; padding:20px;">
+          <div class="between" style="align-items:flex-start;">
+            <div class="row" style="gap:10px;">
+              <span class="cat-icon" style="width:40px;height:40px;border-radius:12px;"><svg class="ico" style="width:18px;height:18px;color:var(--primary);"><use href="#i-map"></use></svg></span>
+              <div>
+                <h3 style="font-size:.98rem;">{{ st.state }}</h3>
+                <p class="tiny" style="margin-top:2px;">{{ st.n }} scheme{{ '' if st.n == 1 else 's' }}</p>
+              </div>
+            </div>
+            <svg class="ico" style="width:16px;height:16px;color:var(--muted-2);"><use href="#i-arrow-right"></use></svg>
+          </div>
+          <div class="cat-foot" style="margin-top:16px; padding-top:14px; border-top:1px dashed var(--border);">
+            <span>Largest award</span>
+            <strong style="color:var(--ink-strong); font-size:.85rem;">{{ st.top | short_amount }}</strong>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+
+    <div class="glass cta" style="margin-top:36px;">
+      <div>
+        <span class="eyebrow"><svg class="ico"><use href="#i-sparkles"></use></svg> Don't see your state?</span>
+        <h2 style="margin-top:10px; font-size:1.5rem;">Central schemes are open to every domicile.</h2>
+        <p>{{ stats.central }} central government schemes accept applications from all Indian states.</p>
+      </div>
+      <a href="/scholarships?category=Central+Government" class="btn btn-primary">Browse central schemes <svg class="ico"><use href="#i-arrow-right"></use></svg></a>
+    </div>
+  </div>
+</section>
+{% endblock %}

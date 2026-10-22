@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% set meta = STATUS_META[app.status] %}
+{% block title %}{{ app.scholarship_name }} · {{ meta.label }} · {{ APP_NAME }}{% endblock %}
+
+{% block content %}
+<section class="section-tight" style="padding-top: 28px;">
+  <div class="container">
+    <nav class="breadcrumb">
+      <a href="/">Home</a><span class="sep">/</span>
+      <a href="/track">Track</a><span class="sep">/</span>
+      <span class="mono">{{ app.application_no }}</span>
+    </nav>
+
+    {% if just_submitted %}
+      <div class="glass card" style="display:flex; gap:16px; align-items:flex-start; padding:18px 20px; margin-bottom:18px; border-color: rgba(69,224,164,.4); background: linear-gradient(150deg, rgba(69,224,164,.14), rgba(255,255,255,.03));">
+        <svg class="ico" style="color:var(--success); width:24px; height:24px; flex:none; margin-top:2px;"><use href="#i-check-circle"></use></svg>
+        <div>
+          <strong>Application submitted successfully.</strong>
+          <p class="small" style="margin-top:4px;">
+            Your submission ID is <span class="mono" style="color:var(--ink-strong);">{{ app.application_no }}</span>.
+            Save this page or bookmark it — you will need the ID and your date of birth to track progress.
+          </p>
+        </div>
+        <button class="btn btn-ghost btn-sm" type="button" data-copy="{{ request.url }}" style="margin-left:auto;"><svg class="ico"><use href="#i-copy"></use></svg> Copy link</button>
+      </div>
+    {% endif %}
+
+    <!-- Status hero -------------------------------------------------------->
+    <div class="glass status-hero glass-sheen">
+      <div class="status-hero-top">
+        <div style="max-width: 64ch;">
+          <span class="eyebrow"><svg class="ico"><use href="#i-{{ meta.icon }}"></use></svg> Live application status</span>
+          <h2>{{ app.scholarship_name }}</h2>
+          <div class="row" style="gap:10px;">
+            <span class="appno">
+              {{ app.application_no }}
+              <button type="button" data-copy="{{ app.application_no }}" title="Copy submission ID" aria-label="Copy submission ID">
+                <svg class="ico" style="width:13px;height:13px;"><use href="#i-copy"></use></svg>
+              </button>
+            </span>
+            <span class="pill pill-soft"><svg class="ico"><use href="#i-graduation"></use></svg> {{ app.provider }}</span>
+            <span class="pill pill-soft"><svg class="ico"><use href="#i-calendar"></use></svg> Updated {{ app.updated_label }}</span>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <span class="status-pill tone-{{ meta.tone }}" style="font-size:.84rem; padding:8px 16px;">{{ meta.label }}</span>
+          <div class="mono" style="font-size:2rem; font-weight:600; margin-top:10px; letter-spacing:-.04em;">{{ app.progress }}<span class="muted" style="font-size:1rem;">%</span></div>
+          <small class="muted tiny">{{ meta.short }}</small>
+        </div>
+      </div>
+
+      <div style="margin-top: 26px;">
+        <div class="progress"><span data-value="{{ app.progress }}" style="width: {{ app.progress }}%;"></span></div>
+        <div class="steps-horizontal">
+          {% for step in flow %}
+            {% set step_meta = STATUS_META[step] %}
+            {% set idx = loop.index0 %}
+            {% set current_idx = flow.index(app.status) if app.status in flow else -1 %}
+            <div class="sh-step {{ 'done' if current_idx > idx else ('current' if current_idx == idx) }}">
+              {{ step_meta.label }}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="between" style="align-items:flex-start; gap:22px;">
+        <div style="display:flex; gap:12px; align-items:flex-start;">
+          <svg class="ico" style="color: var(--primary); width:20px; height:20px; flex:none; margin-top:2px;"><use href="#i-{{ meta.icon }}"></use></svg>
+          <div>
+            <strong class="small">What this means</strong>
+            <p class="small" style="margin-top:4px;">{{ meta.note }}</p>
+          </div>
+        </div>
+        {% if is_owner %}
+          <div class="row" style="gap:8px;">
+            <a href="/scholarships/{{ app.scholarship_slug }}" class="btn btn-ghost btn-sm"><svg class="ico"><use href="#i-book"></use></svg> Scheme details</a>
+            {% if app.status in ['submitted', 'under_review', 'on_hold'] %}
+              <form method="post" action="/applications/{{ app.id }}/withdraw" data-confirm="Withdraw this application? This cannot be undone.">
+                <button class="btn btn-danger btn-sm" type="submit"><svg class="ico"><use href="#i-x"></use></svg> Withdraw</button>
+              </form>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if app.remarks %}
+      <div class="glass card" style="margin-top:18px; display:flex; gap:14px; align-items:flex-start; border-color: rgba(255,194,102,.36); background: linear-gradient(150deg, rgba(255,194,102,.12), rgba(255,255,255,.03));">
+        <svg class="ico" style="color:var(--amber); width:20px; height:20px; flex:none; margin-top:2px;"><use href="#i-alert"></use></svg>
+        <div>
+          <strong class="small">Officer remarks</strong>
+          <p class="small" style="margin-top:4px;">{{ app.remarks }}</p>
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- Timeline + details ------------------------------------------------->
+    <div class="two-col" style="grid-template-columns: minmax(0,1fr) 360px; margin-top:22px;">
+      <div class="glass content-block">
+        <div class="between" style="margin-bottom:20px;">
+          <h2 style="margin:0;"><svg class="ico"><use href="#i-list"></use></svg> Application journey</h2>
+          <span class="pill pill-soft">{{ events | length }} update{{ '' if events | length == 1 else 's' }}</span>
+        </div>
+
+        <div class="timeline">
+          {% for e in events %}
+            {% set e_meta = STATUS_META.get(e.status, {'label': e.title, 'icon': 'check', 'tone': 'info'}) %}
+            <div class="tl-item {{ 'is-done' if not loop.last else 'is-current' }}">
+              <span class="tl-dot"><svg class="ico"><use href="#i-{{ e_meta.icon }}"></use></svg></span>
+              <h4>
+                {{ e.title }}
+                <span class="status-pill tone-{{ e_meta.tone }}" style="font-size:.66rem;">{{ e_meta.label }}</span>
+              </h4>
+              {% if e.note %}<p>{{ e.note }}</p>{% endif %}
+              <div class="tl-time">{{ e.time_label }} · {{ e.actor }}</div>
+            </div>
+          {% endfor %}
+
+          {% for step in upcoming %}
+            {% set s_meta = STATUS_META[step] %}
+            <div class="tl-item is-upcoming">
+              <span class="tl-dot"><svg class="ico"><use href="#i-{{ s_meta.icon }}"></use></svg></span>
+              <h4>{{ s_meta.label }}</h4>
+              <p>{{ s_meta.note }}</p>
+              <div class="tl-time">Pending</div>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="divider"></div>
+        <div class="row" style="gap:10px;">
+          <a href="/contact" class="btn btn-ghost btn-sm"><svg class="ico"><use href="#i-mail"></use></svg> Raise a query</a>
+          <button class="btn btn-ghost btn-sm" type="button" onclick="window.print()"><svg class="ico"><use href="#i-download"></use></svg> Print receipt</button>
+          <span class="tiny muted" style="margin-left:auto;">Timestamps are in IST</span>
+        </div>
+      </div>
+
+      <aside>
+        <div class="glass card">
+          <h3 style="font-size:.98rem; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+            <svg class="ico" style="color:var(--primary); width:17px; height:17px;"><use href="#i-file"></use></svg> Application details
+          </h3>
+          <div class="kv"><span>Applicant</span><strong>{{ app.full_name }}</strong></div>
+          <div class="kv"><span>Institute</span><strong>{{ app.institute or '—' }}</strong></div>
+          <div class="kv"><span>Course</span><strong>{{ app.course or '—' }}</strong></div>
+          <div class="kv"><span>Level</span><strong>{{ app.level or '—' }}</strong></div>
+          <div class="kv"><span>Category</span><strong>{{ app.category or '—' }}</strong></div>
+          <div class="kv"><span>State</span><strong>{{ app.state or '—' }}</strong></div>
+          <div class="kv"><span>Annual income</span><strong>{{ app.annual_income | inr }}</strong></div>
+          <div class="kv"><span>Submitted on</span><strong>{{ app.created_label }}</strong></div>
+          <div class="kv"><span>Last update</span><strong>{{ app.updated_label }}</strong></div>
+        </div>
+
+        <div class="glass card sch-sticky-gap" style="margin-top:16px;">
+          <h3 style="font-size:.98rem; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+            <svg class="ico" style="color:var(--aqua); width:17px; height:17px;"><use href="#i-wallet"></use></svg> Award summary
+          </h3>
+          <span class="amount-sub">Sanctioned value</span>
+          <div class="amount-big">{{ app.amount }}</div>
+          <div class="kv" style="margin-top:12px;"><span>Scheme deadline</span><strong>{{ app.deadline | date_human }}</strong></div>
+          <div class="kv"><span>Disbursal</span><strong>DBT to bank account</strong></div>
+          <a href="{{ app.official_link }}" target="_blank" rel="noopener" class="btn btn-ghost btn-block btn-sm" style="margin-top:16px;">
+            Official portal <svg class="ico"><use href="#i-external"></use></svg>
+          </a>
+        </div>
+
+        {% if not is_owner %}
+          <div class="glass card card-tight" style="margin-top:16px;">
+            <p class="tiny muted" style="margin:0;">
+              You are viewing this application in verified guest mode. Only limited details are shown.
+              <a href="/login" style="color:var(--primary);">Sign in</a> as the applicant for the full dashboard.
+            </p>
+          </div>
+        {% endif %}
+      </aside>
+    </div>
+  </div>
+</section>
+{% endblock %}

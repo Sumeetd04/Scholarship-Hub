@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Deadline updates & notices · {{ APP_NAME }}{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <nav class="breadcrumb"><a href="/">Home</a><span class="sep">/</span><span>Updates</span></nav>
+    <span class="eyebrow"><svg class="ico"><use href="#i-bell"></use></svg> Notice board</span>
+    <h1 style="margin-top:8px;">Deadline updates &amp; portal notices</h1>
+    <p>Cycle changes, portal outages, document requirements and scam warnings — in one chronological feed.</p>
+
+    <div class="row" style="gap:8px; margin-top:22px;">
+      <a class="chip {{ 'is-active' if not active_tag }}" href="/announcements">All notices</a>
+      {% for t in tags %}
+        <a class="chip {{ 'is-active' if active_tag == t }}" href="/announcements?tag={{ t | urlencode }}">{{ t }}</a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section-tight" style="padding-top: 16px;">
+  <div class="container">
+    {% if announcements %}
+      <div class="sch-grid">
+        {% for a in announcements %}
+          <article class="glass card-hover announce-card">
+            <div class="row" style="gap:8px;">
+              <span class="pill {{ 'pill-amber' if a.tag == 'Deadline' else ('pill-aqua' if a.tag in ['Central','Maharashtra'] else ('pill-rose' if a.tag == 'Safety' else 'pill-primary')) }}">{{ a.tag }}</span>
+              {% if a.pinned %}<span class="pill pill-soft"><svg class="ico pin"><use href="#i-star"></use></svg> Pinned</span>{% endif %}
+            </div>
+            <h3>{{ a.title }}</h3>
+            <p style="-webkit-line-clamp: 6;">{{ a.body }}</p>
+            <div class="announce-meta">
+              <svg class="ico" style="width:12px;height:12px;"><use href="#i-clock"></use></svg>
+              <span>{{ a.created_at | date_human }}</span>
+              {% if a.link %}
+                <a class="link-arrow" style="font-size:.76rem; margin-left:auto;" href="{{ a.link }}" target="_blank" rel="noopener">Official portal <svg class="ico" style="width:12px;height:12px;"><use href="#i-external"></use></svg></a>
+              {% endif %}
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="glass empty">
+        <svg class="ico"><use href="#i-bell"></use></svg>
+        <h3>No notices in this category</h3>
+        <p>Try another filter or check back after the next cycle notification.</p>
+        <a href="/announcements" class="btn btn-primary">All notices</a>
+      </div>
+    {% endif %}
+
+    <div class="glass cta" style="margin-top:38px;">
+      <div>
+        <span class="eyebrow"><svg class="ico"><use href="#i-bell"></use></svg> Never miss a date</span>
+        <h2 style="margin-top:10px; font-size:1.5rem;">Your dashboard already tracks every deadline.</h2>
+        <p>Saved schemes and live applications appear on your personal radar with days remaining.</p>
+      </div>
+      <a href="/dashboard" class="btn btn-primary">Open my dashboard <svg class="ico"><use href="#i-arrow-right"></use></svg></a>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,53 @@
+{# Scholarship card. Expects: s, saved_ids, applied_ids (optional), score (optional) #}
+{% set cat_slug = s.category | lower | replace(' ', '-') %}
+{% set cat_icon = 'landmark' if s.category == 'Central Government' else ('map' if s.category == 'State Government' else ('briefcase' if s.category == 'Private & Corporate' else 'heart')) %}
+<article class="glass card-hover sch-card">
+  <div class="sch-top">
+    <span class="pill {{ 'pill-primary' if s.category == 'Central Government' else ('pill-aqua' if s.category == 'State Government' else ('pill-amber' if s.category == 'Private & Corporate' else 'pill-rose')) }}">
+      <svg class="ico"><use href="#i-{{ cat_icon }}"></use></svg>
+      {{ s.category }}
+    </span>
+    <div class="row" style="gap:6px; flex-wrap:nowrap;">
+      {% if s.score is defined and s.score %}
+        <span class="match-badge" title="Match against your profile">{{ s.score }}% match</span>
+      {% endif %}
+      {% if applied_ids is defined and s.id in applied_ids %}
+        <span class="pill pill-success" title="You have applied"><svg class="ico"><use href="#i-check"></use></svg> Applied</span>
+      {% elif current_user %}
+        <form method="post" action="/saved/{{ s.slug }}/toggle">
+          <input type="hidden" name="next" value="{{ request.url.path }}">
+          <button type="submit" class="saved-btn {{ 'is-saved' if saved_ids and s.id in saved_ids }}" aria-label="{{ 'Remove from saved' if saved_ids and s.id in saved_ids else 'Save scholarship' }}" title="{{ 'Remove from saved' if saved_ids and s.id in saved_ids else 'Save for later' }}">
+            <svg class="ico"><use href="#i-star"></use></svg>
+          </button>
+        </form>
+      {% else %}
+        <a href="/login?next=/scholarships/{{ s.slug }}" class="saved-btn" title="Sign in to save" aria-label="Sign in to save">
+          <svg class="ico"><use href="#i-star"></use></svg>
+        </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <h3><a href="/scholarships/{{ s.slug }}">{{ s.name }}</a></h3>
+  <div class="sch-provider"><svg class="ico"><use href="#i-graduation"></use></svg> {{ s.provider }}</div>
+  <p class="sch-desc">{{ s.description }}</p>
+
+  <div class="sch-tags">
+    <span class="pill pill-soft"><svg class="ico"><use href="#i-map"></use></svg> {{ s.state }}</span>
+    <span class="pill pill-soft">{{ s.level }}</span>
+  </div>
+
+  <div class="sch-meta">
+    <div>
+      <span class="lbl">Award</span>
+      <div class="sch-amount">{{ s.short_amount }}<span class="muted" style="font-weight:500;font-size:.72rem;"> / cycle</span></div>
+    </div>
+    <div class="sch-deadline {{ s.urgency }}">
+      <span class="lbl">Deadline</span>
+      <div class="value">
+        {% if s.days_left < 0 %}<svg class="ico" style="width:12px;height:12px;"><use href="#i-clock"></use></svg> {{ s.deadline_label }}
+        {% else %}{{ s.deadline_label }}{% endif %}
+      </div>
+    </div>
+  </div>
+</article>

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Contact support · {{ APP_NAME }}{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <nav class="breadcrumb"><a href="/">Home</a><span class="sep">/</span><span>Contact</span></nav>
+    <span class="eyebrow"><svg class="ico"><use href="#i-mail"></use></svg> Student support</span>
+    <h1 style="margin-top:8px;">Talk to a human, not a bot</h1>
+    <p>Application stuck? Document rejected? Not sure which scheme fits? Tell us the submission ID and we will follow up with the nodal officer.</p>
+  </div>
+</section>
+
+<section class="section-tight" style="padding-top: 10px;">
+  <div class="container">
+    <div class="two-col">
+      <form class="glass card" method="post" action="/contact">
+        <h2 style="font-size:1.15rem; margin-bottom:6px;">Send a message</h2>
+        <p class="small" style="margin-bottom:20px;">Average first response: 6 working hours. Mon–Sat, 9 AM to 7 PM IST.</p>
+
+        {% if error %}<div class="form-error"><svg class="ico"><use href="#i-alert"></use></svg><span>{{ error }}</span></div>{% endif %}
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="name">Your name</label>
+            <input id="name" class="input" name="name" value="{{ form.name or '' }}" required placeholder="Full name">
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" class="input" type="email" name="email" value="{{ form.email or '' }}" required placeholder="you@example.com">
+          </div>
+        </div>
+        <div class="field">
+          <label for="subject">Subject</label>
+          <input id="subject" class="input" name="subject" value="{{ form.subject or '' }}" placeholder="e.g. Status stuck at document verification">
+        </div>
+        <div class="field">
+          <label for="message">Message</label>
+          <textarea id="message" class="textarea" name="message" required placeholder="Include your submission ID (SH-2026-……) and what you have already tried.">{{ form.message or '' }}</textarea>
+        </div>
+        <button class="btn btn-primary btn-lg" type="submit"><svg class="ico"><use href="#i-send"></use></svg> Send message</button>
+      </form>
+
+      <aside>
+        <div class="glass card">
+          <h3 style="font-size:1rem; margin-bottom:18px;">Other ways to reach us</h3>
+          <div class="contact-list">
+            <div class="contact-item">
+              <span class="ci-icon"><svg class="ico"><use href="#i-mail"></use></svg></span>
+              <div><strong>Email</strong><span>{{ SUPPORT_EMAIL }}</span></div>
+            </div>
+            <div class="contact-item">
+              <span class="ci-icon" style="background:rgba(55,213,214,.12); color:var(--aqua);"><svg class="ico"><use href="#i-phone"></use></svg></span>
+              <div><strong>Helpline</strong><span>1800-000-0000 · toll free</span></div>
+            </div>
+            <div class="contact-item">
+              <span class="ci-icon" style="background:rgba(255,194,102,.12); color:var(--amber);"><svg class="ico"><use href="#i-map"></use></svg></span>
+              <div><strong>Office</strong><span>Pune, Maharashtra · India</span></div>
+            </div>
+            <div class="contact-item">
+              <span class="ci-icon" style="background:rgba(255,125,156,.12); color:var(--rose);"><svg class="ico"><use href="#i-clock"></use></svg></span>
+              <div><strong>Hours</strong><span>Mon–Sat · 9:00 – 19:00 IST</span></div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div style="display:flex; gap:10px; align-items:flex-start;">
+            <svg class="ico" style="color:var(--success); width:18px; height:18px; flex:none; margin-top:2px;"><use href="#i-shield"></use></svg>
+            <p class="tiny muted" style="margin:0;">
+              We will never ask for your password, OTP or Aadhaar number over email or phone.
+              Report imposters to <a href="https://cybercrime.gov.in" target="_blank" rel="noopener" style="color:var(--primary);">cybercrime.gov.in</a>.
+            </p>
+          </div>
+        </div>
+
+        <div class="glass card card-tight" style="margin-top:16px;">
+          <strong class="small">Faster than email?</strong>
+          <p class="tiny muted" style="margin-top:6px;">Check the <a href="/faq" style="color:var(--primary);">FAQ</a> — most document and DBT questions are answered there.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+{% endblock %}

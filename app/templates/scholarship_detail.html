@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% block title %}{{ sch.name }} · {{ APP_NAME }}{% endblock %}
+{% block description %}{{ sch.description[:150] }}{% endblock %}
+
+{% block content %}
+<section class="page-hero" style="padding-bottom: 10px;">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a><span class="sep">/</span>
+      <a href="/scholarships">Scholarships</a><span class="sep">/</span>
+      <a href="/scholarships?category={{ sch.category | urlencode }}">{{ sch.category }}</a><span class="sep">/</span>
+      <span>{{ sch.name | truncate(48) }}</span>
+    </nav>
+  </div>
+</section>
+
+<section class="section-tight" style="padding-top: 0;">
+  <div class="container">
+    <div class="detail-grid">
+      <!-- Main ------------------------------------------------------------->
+      <div>
+        <div class="glass detail-head glass-sheen">
+          <div class="row" style="gap:8px;">
+            <span class="pill pill-primary"><svg class="ico"><use href="#i-landmark"></use></svg> {{ sch.category }}</span>
+            <span class="pill pill-soft"><svg class="ico"><use href="#i-map"></use></svg> {{ sch.state }}</span>
+            <span class="pill pill-soft">{{ sch.level }}</span>
+            {% if sch.featured %}<span class="pill pill-amber"><svg class="ico"><use href="#i-star"></use></svg> Featured</span>{% endif %}
+          </div>
+          <h1>{{ sch.name }}</h1>
+          <div class="detail-provider">
+            <svg class="ico"><use href="#i-graduation"></use></svg> {{ sch.provider }}
+          </div>
+          <p class="mt-2" style="max-width: 70ch;">{{ sch.description }}</p>
+
+          <div class="detail-meta">
+            <span class="pill {{ 'pill-success' if sch.days_left >= 0 else 'pill-muted' }}">
+              <svg class="ico"><use href="#i-calendar"></use></svg>
+              {{ 'Deadline ' + sch.deadline | date_human if sch.days_left >= 0 else 'Closed for this cycle' }}
+            </span>
+            <span class="pill pill-soft"><svg class="ico"><use href="#i-users"></use></svg>
+              {{ 'Open to all genders' if sch.gender == 'Any' else 'Girls / women only' }}
+            </span>
+            {% if sch.minority %}<span class="pill pill-soft">Minority communities</span>{% endif %}
+            {% if sch.disability %}<span class="pill pill-soft">Students with disabilities</span>{% endif %}
+          </div>
+        </div>
+
+        <div class="glass content-block">
+          <h2><svg class="ico"><use href="#i-check-circle"></use></svg> Who can apply</h2>
+          <ul class="bullet-list">
+            {% for item in sch.eligibility_list %}<li>{{ item | replace('• ', '') }}</li>{% endfor %}
+          </ul>
+        </div>
+
+        <div class="glass content-block">
+          <h2><svg class="ico"><use href="#i-wallet"></use></svg> What you get</h2>
+          <ul class="bullet-list">
+            {% for item in sch.benefits_list %}<li>{{ item | replace('• ', '') }}</li>{% endfor %}
+          </ul>
+        </div>
+
+        <div class="glass content-block">
+          <h2><svg class="ico"><use href="#i-file"></use></svg> Documents to keep ready</h2>
+          <div class="doc-list">
+            {% for doc in sch.documents_list %}
+              <div class="doc-item"><svg class="ico"><use href="#i-check"></use></svg> {{ doc | replace('• ', '') }}</div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="glass content-block">
+          <h2><svg class="ico"><use href="#i-send"></use></svg> How to apply</h2>
+          <p>
+            Submit through Scholarship Hub to generate a trackable submission ID. You can also apply
+            directly on the official portal — <strong>{{ sch.apply_mode }}</strong>.
+          </p>
+          <div class="row" style="gap:10px; margin-top:16px;">
+            <a href="{{ sch.official_link }}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">
+              Official portal <svg class="ico"><use href="#i-external"></use></svg>
+            </a>
+            {% if sch.tags_list %}
+              <div class="row" style="gap:6px;">
+                {% for t in sch.tags_list %}<span class="pill pill-soft">#{{ t }}</span>{% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="glass content-block" style="display:flex; gap:16px; align-items:flex-start;">
+          <svg class="ico" style="color:var(--amber); width:20px; height:20px; flex:none; margin-top:2px;"><use href="#i-shield"></use></svg>
+          <div>
+            <h3 style="font-size:.95rem; margin-bottom:6px;">Never pay an agent</h3>
+            <p style="font-size:.84rem;">No government scholarship portal charges a processing fee. If anyone asks for money to secure this scheme, report it at <a href="https://cybercrime.gov.in" target="_blank" rel="noopener" style="color:var(--primary);">cybercrime.gov.in</a>.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Apply card ------------------------------------------------------->
+      <aside>
+        <div class="glass apply-card glass-sheen">
+          <span class="amount-sub">Award value</span>
+          <div class="amount-big">{{ sch.amount }}</div>
+
+          <div class="apply-facts">
+            <div class="apply-fact">
+              <span><svg class="ico"><use href="#i-calendar"></use></svg> Deadline</span>
+              <strong class="{{ 'muted' if sch.days_left < 0 }}">{{ sch.deadline | date_human }}</strong>
+            </div>
+            <div class="apply-fact">
+              <span><svg class="ico"><use href="#i-clock"></use></svg> Status</span>
+              <strong>
+                {% if sch.days_left < 0 %}
+                  <span class="status-pill tone-muted">Closed</span>
+                {% elif sch.days_left <= 10 %}
+                  <span class="status-pill tone-warning">{{ sch.days_left }} days left</span>
+                {% else %}
+                  <span class="status-pill tone-success">Open</span>
+                {% endif %}
+              </strong>
+            </div>
+            <div class="apply-fact">
+              <span><svg class="ico"><use href="#i-wallet"></use></svg> Income ceiling</span>
+              <strong>{{ sch.income_limit | inr if sch.income_limit else 'No limit' }}</strong>
+            </div>
+            <div class="apply-fact">
+              <span><svg class="ico"><use href="#i-graduation"></use></svg> Study level</span>
+              <strong>{{ sch.level }}</strong>
+            </div>
+            <div class="apply-fact">
+              <span><svg class="ico"><use href="#i-map"></use></svg> Region</span>
+              <strong>{{ sch.state }}</strong>
+            </div>
+          </div>
+
+          {% if current_user and score is not none %}
+            <div style="padding:12px 14px; border-radius:12px; background: rgba(69,224,164,.08); border:1px solid rgba(69,224,164,.24); margin-bottom:16px;">
+              <div class="between" style="margin-bottom:8px;">
+                <span class="tiny" style="color:var(--muted);">Profile match</span>
+                <strong class="tiny" style="color:var(--success);">{{ score }}%</strong>
+              </div>
+              <div class="progress" style="height:6px;"><span data-value="{{ score }}" style="width:{{ score }}%; background: linear-gradient(90deg, var(--success), var(--aqua));"></span></div>
+              {% if reasons %}<p class="tiny muted" style="margin-top:8px;">{{ reasons[0] }}</p>{% endif %}
+            </div>
+          {% endif %}
+
+          {% if application %}
+            <a href="/track/{{ application.application_no }}" class="btn btn-primary btn-block btn-lg">
+              <svg class="ico"><use href="#i-search"></use></svg> Track my application
+            </a>
+            <p class="apply-note">Applied as <span class="mono">{{ application.application_no }}</span></p>
+          {% elif not current_user %}
+            <a href="/login?next=/apply/{{ sch.slug }}" class="btn btn-primary btn-block btn-lg">
+              Sign in to apply <svg class="ico"><use href="#i-arrow-right"></use></svg>
+            </a>
+            <p class="apply-note">New here? <a href="/register" style="color:var(--primary);">Create a free account</a> — takes 30 seconds.</p>
+          {% elif sch.days_left < 0 %}
+            <button class="btn btn-ghost btn-block btn-lg" disabled>Closed for this cycle</button>
+            <p class="apply-note">Save it and we will flag the next window.</p>
+          {% else %}
+            <a href="/apply/{{ sch.slug }}" class="btn btn-primary btn-block btn-lg">
+              Start application <svg class="ico"><use href="#i-arrow-right"></use></svg>
+            </a>
+            <p class="apply-note">One submission ID, instantly trackable.</p>
+          {% endif %}
+
+          <div class="row" style="gap:8px; margin-top:12px;">
+            {% if current_user %}
+              <form method="post" action="/saved/{{ sch.slug }}/toggle" style="flex:1;">
+                <input type="hidden" name="next" value="/scholarships/{{ sch.slug }}">
+                <button type="submit" class="btn btn-ghost btn-block">
+                  <svg class="ico" style="{{ 'color:var(--amber); fill:currentColor;' if is_saved }}"><use href="#i-star"></use></svg>
+                  {{ 'Saved' if is_saved else 'Save for later' }}
+                </button>
+              </form>
+            {% else %}
+              <a href="/login?next=/scholarships/{{ sch.slug }}" class="btn btn-ghost" style="flex:1;">
+                <svg class="ico"><use href="#i-star"></use></svg> Save
+              </a>
+            {% endif %}
+            <button class="icon-btn" type="button" data-copy="{{ request.url }}" title="Copy link to this page" aria-label="Copy link">
+              <svg class="ico"><use href="#i-copy"></use></svg>
+            </button>
+          </div>
+
+          <p class="apply-note" style="margin-top:14px;">
+            Always verify details on the official portal before paying any fee.
+          </p>
+        </div>
+
+        <div class="glass card card-tight sch-sticky-gap" style="margin-top:16px;">
+          <div class="row" style="gap:10px; align-items:flex-start;">
+            <svg class="ico" style="color:var(--aqua); width:18px; height:18px; margin-top:2px;"><use href="#i-sparkles"></use></svg>
+            <div>
+              <strong class="small">Not sure you qualify?</strong>
+              <p class="tiny" style="margin-top:4px;">Run the 30-second eligibility finder against your state, income and category.</p>
+              <a href="/finder" class="link-arrow tiny" style="margin-top:8px; display:inline-flex;">Check eligibility <svg class="ico" style="width:12px;height:12px;"><use href="#i-arrow-right"></use></svg></a>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    {% if related %}
+      <div class="section-head" style="margin-top:52px;">
+        <div>
+          <span class="eyebrow"><svg class="ico"><use href="#i-grid"></use></svg> Similar schemes</span>
+          <h2 style="margin-top:8px;">You may also qualify for</h2>
+        </div>
+        <a href="/scholarships?category={{ sch.category | urlencode }}" class="link-arrow">More in {{ sch.category }} <svg class="ico"><use href="#i-arrow-right"></use></svg></a>
+      </div>
+      <div class="sch-grid">
+        {% for s in related %}
+          {% include "partials/scholarship_card.html" %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
